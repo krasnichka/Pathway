@@ -79,6 +79,10 @@ export default function SimpleBottomNavigation() {
   const [value, setValue] = React.useState(0);
 
   return (
+    <>
+    <h1>
+      fffff
+    </h1>
     <Box sx={{ width: '100%', maxWidth: 600, margin: '0 auto', pb: 4 }}>
       {/* Меню навигации */}
       <BottomNavigation
@@ -124,5 +128,6 @@ export default function SimpleBottomNavigation() {
         />
       </Box>
     </Box>
+    </>
   );
 }
