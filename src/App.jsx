@@ -26,15 +26,8 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 // 🏠 Главная страница
 function HomePage() {
-  console.log("HomePage рендерится!"); // Для отладки
-  
   return (
-    <Box sx={{ minHeight: "100vh", py: 4, pb: 12, px: 2 }}>
-      {/* ТЕСТОВЫЙ БЛОК - чтобы убедиться что компонент работает */}
-      <Paper sx={{ p: 2, mb: 3, bgcolor: "lightblue" }}>
-        <Typography>✅ Главная страница загружена!</Typography>
-      </Paper>
-
+    <Container maxWidth="md" sx={{ py: 4, pb: 12 }}>
       {/* 1. Заголовок и миссия */}
       <Box sx={{ textAlign: "center", mb: 6 }}>
         <Typography variant="h3" fontWeight="bold" gutterBottom color="primary">
@@ -149,7 +142,7 @@ function HomePage() {
         <Button
           variant="contained"
           size="large"
-          href="/profile"
+          href="/Pathway/profile"
           endIcon={<ArrowForwardIcon />}
           sx={{
             bgcolor: "white",
@@ -162,7 +155,7 @@ function HomePage() {
           Начать сейчас
         </Button>
       </Paper>
-    </Box>
+    </Container>
   );
 }
 
@@ -235,19 +228,23 @@ function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  console.log("Текущий путь:", location.pathname); // Для отладки
-
   const getCurrentValue = () => {
     switch (location.pathname) {
       case "/":
+      case "/Pathway/":
+      case "/Pathway":
         return 0;
       case "/profile":
+      case "/Pathway/profile":
         return 1;
       case "/directions":
+      case "/Pathway/directions":
         return 2;
       case "/stats":
+      case "/Pathway/stats":
         return 3;
       case "/goals":
+      case "/Pathway/goals":
         return 4;
       default:
         return 0;
@@ -298,7 +295,7 @@ function BottomNav() {
 // 🟡 Главный компонент с роутингом
 function App() {
   return (
-    <Router>
+    <Router basename="/Pathway">
       <Box
         sx={{
           minHeight: "100vh",
