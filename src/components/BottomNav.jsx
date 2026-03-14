@@ -1,15 +1,25 @@
 import * as React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Paper, BottomNavigation, BottomNavigationAction } from "@mui/material";
+import {
+  Paper,
+  BottomNavigation,
+  BottomNavigationAction,
+  Box,
+  Typography,
+  IconButton,
+} from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
 import SchoolIcon from "@mui/icons-material/School";
 import InsightsIcon from "@mui/icons-material/Insights";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useAuth } from "../context/AuthContext";
 
 function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { currentUser, logout, userData } = useAuth();
 
   const getCurrentValue = () => {
     switch (location.pathname) {
@@ -39,6 +49,20 @@ function BottomNav() {
     navigate(paths[newValue]);
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (err) {
+      console.error("Ошибка выхода:", err);
+    }
+  };
+
+  // Не показываем навигацию на страницах логина/регистрации
+  if (location.pathname === "/login" || location.pathname === "/register") {
+    return null;
+  }
+
   return (
     <Paper
       elevation={3}
@@ -51,6 +75,35 @@ function BottomNav() {
         zIndex: 1000,
       }}
     >
+      {/* Инфо о пользователе */}
+      {currentUser && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            px: 2,
+            py: 1,
+            bgcolor: "primary.light",
+          }}
+        >
+          <Typography
+            variant="body2"
+            fontWeight="bold"
+            color="primary.contrastText"
+          >
+            👋 {userData?.displayName || currentUser.email}
+          </Typography>
+          <IconButton
+            onClick={handleLogout}
+            size="small"
+            sx={{ color: "white" }}
+          >
+            <LogoutIcon />
+          </IconButton>
+        </Box>
+      )}
+
       <BottomNavigation
         showLabels
         value={getCurrentValue()}
