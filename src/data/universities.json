@@ -1,0 +1,856 @@
+{
+  "universities": [
+    {
+      "id": 1,
+      "name": "МГУ им. М.В. Ломоносова",
+      "city": "Москва",
+      "rating": 98,
+      "type": "Государственный",
+      "website": "https://msu.ru",
+      "directions": [
+        {
+          "id": 101,
+          "name": "Прикладная математика и информатика",
+          "category": "IT",
+          "minScores": {
+            "math": 95,
+            "russian": 85,
+            "informatics": 90
+          },
+          "budgetPlaces": 45,
+          "cost": 380000,
+          "duration": "4 года"
+        },
+        {
+          "id": 102,
+          "name": "Фундаментальная информатика и ИТ",
+          "category": "IT",
+          "minScores": {
+            "math": 93,
+            "russian": 83,
+            "informatics": 88
+          },
+          "budgetPlaces": 50,
+          "cost": 370000,
+          "duration": "4 года"
+        },
+        {
+          "id": 103,
+          "name": "Экономика",
+          "category": "Экономика",
+          "minScores": {
+            "math": 90,
+            "russian": 85,
+            "social": 88
+          },
+          "budgetPlaces": 60,
+          "cost": 400000,
+          "duration": "4 года"
+        },
+        {
+          "id": 104,
+          "name": "Юриспруденция",
+          "category": "Юриспруденция",
+          "minScores": {
+            "social": 92,
+            "history": 88,
+            "russian": 90
+          },
+          "budgetPlaces": 40,
+          "cost": 420000,
+          "duration": "5 лет"
+        },
+        {
+          "id": 105,
+          "name": "Психология",
+          "category": "Психология",
+          "minScores": {
+            "biology": 85,
+            "social": 83,
+            "russian": 85
+          },
+          "budgetPlaces": 35,
+          "cost": 350000,
+          "duration": "4 года"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "НИУ Высшая школа экономики (ВШЭ)",
+      "city": "Москва",
+      "rating": 95,
+      "type": "Государственный",
+      "website": "https://hse.ru",
+      "directions": [
+        {
+          "id": 201,
+          "name": "Программная инженерия",
+          "category": "IT",
+          "minScores": {
+            "math": 92,
+            "russian": 85,
+            "informatics": 90
+          },
+          "budgetPlaces": 70,
+          "cost": 480000,
+          "duration": "4 года"
+        },
+        {
+          "id": 202,
+          "name": "Бизнес-информатика",
+          "category": "IT",
+          "minScores": {
+            "math": 90,
+            "russian": 83,
+            "informatics": 85
+          },
+          "budgetPlaces": 65,
+          "cost": 460000,
+          "duration": "4 года"
+        },
+        {
+          "id": 203,
+          "name": "Экономика",
+          "category": "Экономика",
+          "minScores": {
+            "math": 93,
+            "russian": 85,
+            "social": 90
+          },
+          "budgetPlaces": 100,
+          "cost": 450000,
+          "duration": "4 года"
+        },
+        {
+          "id": 204,
+          "name": "Менеджмент",
+          "category": "Экономика",
+          "minScores": {
+            "math": 88,
+            "russian": 83,
+            "social": 85
+          },
+          "budgetPlaces": 80,
+          "cost": 430000,
+          "duration": "4 года"
+        },
+        {
+          "id": 205,
+          "name": "Юриспруденция",
+          "category": "Юриспруденция",
+          "minScores": {
+            "social": 90,
+            "history": 85,
+            "russian": 88
+          },
+          "budgetPlaces": 50,
+          "cost": 450000,
+          "duration": "5 лет"
+        },
+        {
+          "id": 206,
+          "name": "Журналистика",
+          "category": "Медиа",
+          "minScores": {
+            "literature": 85,
+            "russian": 88,
+            "social": 80
+          },
+          "budgetPlaces": 40,
+          "cost": 400000,
+          "duration": "4 года"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "МФТИ (Физтех)",
+      "city": "Долгопрудный",
+      "rating": 96,
+      "type": "Государственный",
+      "website": "https://mipt.ru",
+      "directions": [
+        {
+          "id": 301,
+          "name": "Прикладная математика и физика",
+          "category": "Наука",
+          "minScores": {
+            "math": 95,
+            "russian": 80,
+            "physics": 93
+          },
+          "budgetPlaces": 50,
+          "cost": 400000,
+          "duration": "5 лет"
+        },
+        {
+          "id": 302,
+          "name": "Компьютерные науки",
+          "category": "IT",
+          "minScores": {
+            "math": 94,
+            "russian": 80,
+            "informatics": 92
+          },
+          "budgetPlaces": 60,
+          "cost": 450000,
+          "duration": "4 года"
+        },
+        {
+          "id": 303,
+          "name": "Радиофизика",
+          "category": "Наука",
+          "minScores": {
+            "math": 90,
+            "russian": 75,
+            "physics": 90
+          },
+          "budgetPlaces": 45,
+          "cost": 380000,
+          "duration": "5 лет"
+        },
+        {
+          "id": 304,
+          "name": "Биотехнологии",
+          "category": "Биотехнологии",
+          "minScores": {
+            "biology": 88,
+            "chemistry": 85,
+            "russian": 75
+          },
+          "budgetPlaces": 30,
+          "cost": 370000,
+          "duration": "4 года"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "МГТУ им. Н.Э. Баумана",
+      "city": "Москва",
+      "rating": 91,
+      "type": "Государственный",
+      "website": "https://bmstu.ru",
+      "directions": [
+        {
+          "id": 401,
+          "name": "Конструирование летательных аппаратов",
+          "category": "Инженерия",
+          "minScores": {
+            "math": 85,
+            "russian": 75,
+            "physics": 82
+          },
+          "budgetPlaces": 60,
+          "cost": 320000,
+          "duration": "5 лет"
+        },
+        {
+          "id": 402,
+          "name": "Робототехника и мехатроника",
+          "category": "Инженерия",
+          "minScores": {
+            "math": 88,
+            "russian": 75,
+            "physics": 85
+          },
+          "budgetPlaces": 50,
+          "cost": 350000,
+          "duration": "4 года"
+        },
+        {
+          "id": 403,
+          "name": "Информационная безопасность",
+          "category": "IT",
+          "minScores": {
+            "math": 83,
+            "russian": 73,
+            "informatics": 80
+          },
+          "budgetPlaces": 55,
+          "cost": 340000,
+          "duration": "5 лет"
+        },
+        {
+          "id": 404,
+          "name": "Машиностроение",
+          "category": "Инженерия",
+          "minScores": {
+            "math": 80,
+            "russian": 70,
+            "physics": 78
+          },
+          "budgetPlaces": 80,
+          "cost": 300000,
+          "duration": "4 года"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "НИТУ МИСИС",
+      "city": "Москва",
+      "rating": 87,
+      "type": "Государственный",
+      "website": "https://misis.ru",
+      "directions": [
+        {
+          "id": 501,
+          "name": "Металлургия",
+          "category": "Инженерия",
+          "minScores": {
+            "math": 75,
+            "russian": 70,
+            "chemistry": 78
+          },
+          "budgetPlaces": 70,
+          "cost": 280000,
+          "duration": "4 года"
+        },
+        {
+          "id": 502,
+          "name": "Нанотехнологии",
+          "category": "Наука",
+          "minScores": {
+            "physics": 80,
+            "chemistry": 78,
+            "russian": 70
+          },
+          "budgetPlaces": 40,
+          "cost": 320000,
+          "duration": "4 года"
+        },
+        {
+          "id": 503,
+          "name": "Программная инженерия",
+          "category": "IT",
+          "minScores": {
+            "math": 82,
+            "russian": 75,
+            "informatics": 80
+          },
+          "budgetPlaces": 50,
+          "cost": 350000,
+          "duration": "4 года"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Первый МГМУ им. И.М. Сеченова",
+      "city": "Москва",
+      "rating": 93,
+      "type": "Государственный",
+      "website": "https://sechenov.ru",
+      "directions": [
+        {
+          "id": 601,
+          "name": "Лечебное дело",
+          "category": "Медицина",
+          "minScores": {
+            "chemistry": 88,
+            "biology": 85,
+            "russian": 80
+          },
+          "budgetPlaces": 150,
+          "cost": 550000,
+          "duration": "6 лет"
+        },
+        {
+          "id": 602,
+          "name": "Педиатрия",
+          "category": "Медицина",
+          "minScores": {
+            "chemistry": 85,
+            "biology": 83,
+            "russian": 78
+          },
+          "budgetPlaces": 120,
+          "cost": 530000,
+          "duration": "6 лет"
+        },
+        {
+          "id": 603,
+          "name": "Стоматология",
+          "category": "Медицина",
+          "minScores": {
+            "chemistry": 90,
+            "biology": 87,
+            "russian": 82
+          },
+          "budgetPlaces": 80,
+          "cost": 600000,
+          "duration": "5 лет"
+        },
+        {
+          "id": 604,
+          "name": "Фармация",
+          "category": "Медицина",
+          "minScores": {
+            "chemistry": 83,
+            "biology": 80,
+            "russian": 75
+          },
+          "budgetPlaces": 60,
+          "cost": 480000,
+          "duration": "5 лет"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "РНИМУ им. Н.И. Пирогова",
+      "city": "Москва",
+      "rating": 90,
+      "type": "Государственный",
+      "website": "https://rsmu.ru",
+      "directions": [
+        {
+          "id": 701,
+          "name": "Лечебное дело",
+          "category": "Медицина",
+          "minScores": {
+            "chemistry": 85,
+            "biology": 83,
+            "russian": 78
+          },
+          "budgetPlaces": 130,
+          "cost": 520000,
+          "duration": "6 лет"
+        },
+        {
+          "id": 702,
+          "name": "Медико-профилактическое дело",
+          "category": "Медицина",
+          "minScores": {
+            "chemistry": 80,
+            "biology": 78,
+            "russian": 75
+          },
+          "budgetPlaces": 70,
+          "cost": 480000,
+          "duration": "6 лет"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "СПбГУ",
+      "city": "Санкт-Петербург",
+      "rating": 94,
+      "type": "Государственный",
+      "website": "https://spbu.ru",
+      "directions": [
+        {
+          "id": 801,
+          "name": "Прикладная математика",
+          "category": "Наука",
+          "minScores": {
+            "math": 90,
+            "russian": 80,
+            "physics": 85
+          },
+          "budgetPlaces": 45,
+          "cost": 360000,
+          "duration": "4 года"
+        },
+        {
+          "id": 802,
+          "name": "Юриспруденция",
+          "category": "Юриспруденция",
+          "minScores": {
+            "social": 88,
+            "history": 85,
+            "russian": 87
+          },
+          "budgetPlaces": 60,
+          "cost": 400000,
+          "duration": "5 лет"
+        },
+        {
+          "id": 803,
+          "name": "Экономика",
+          "category": "Экономика",
+          "minScores": {
+            "math": 87,
+            "russian": 83,
+            "social": 85
+          },
+          "budgetPlaces": 70,
+          "cost": 380000,
+          "duration": "4 года"
+        },
+        {
+          "id": 804,
+          "name": "Психология",
+          "category": "Психология",
+          "minScores": {
+            "biology": 82,
+            "social": 80,
+            "russian": 83
+          },
+          "budgetPlaces": 50,
+          "cost": 350000,
+          "duration": "4 года"
+        },
+        {
+          "id": 805,
+          "name": "Филология",
+          "category": "Гуманитарные",
+          "minScores": {
+            "literature": 85,
+            "russian": 88,
+            "foreign": 80
+          },
+          "budgetPlaces": 55,
+          "cost": 340000,
+          "duration": "4 года"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "ИТМО",
+      "city": "Санкт-Петербург",
+      "rating": 92,
+      "type": "Государственный",
+      "website": "https://itmo.ru",
+      "directions": [
+        {
+          "id": 901,
+          "name": "Программная инженерия",
+          "category": "IT",
+          "minScores": {
+            "math": 90,
+            "russian": 80,
+            "informatics": 88
+          },
+          "budgetPlaces": 80,
+          "cost": 400000,
+          "duration": "4 года"
+        },
+        {
+          "id": 902,
+          "name": "Информационная безопасность",
+          "category": "IT",
+          "minScores": {
+            "math": 87,
+            "russian": 78,
+            "informatics": 85
+          },
+          "budgetPlaces": 60,
+          "cost": 380000,
+          "duration": "5 лет"
+        },
+        {
+          "id": 903,
+          "name": "Дизайн",
+          "category": "Дизайн",
+          "minScores": {
+            "literature": 75,
+            "russian": 75,
+            "creative": 80
+          },
+          "budgetPlaces": 40,
+          "cost": 420000,
+          "duration": "4 года"
+        },
+        {
+          "id": 904,
+          "name": "Робототехника",
+          "category": "Инженерия",
+          "minScores": {
+            "math": 85,
+            "russian": 75,
+            "physics": 82
+          },
+          "budgetPlaces": 50,
+          "cost": 370000,
+          "duration": "4 года"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "СПбПУ (Политех)",
+      "city": "Санкт-Петербург",
+      "rating": 88,
+      "type": "Государственный",
+      "website": "https://spbstu.ru",
+      "directions": [
+        {
+          "id": 1001,
+          "name": "Строительство",
+          "category": "Инженерия",
+          "minScores": {
+            "math": 78,
+            "russian": 70,
+            "physics": 75
+          },
+          "budgetPlaces": 90,
+          "cost": 300000,
+          "duration": "4 года"
+        },
+        {
+          "id": 1002,
+          "name": "Энергетика",
+          "category": "Инженерия",
+          "minScores": {
+            "math": 80,
+            "russian": 72,
+            "physics": 78
+          },
+          "budgetPlaces": 70,
+          "cost": 320000,
+          "duration": "4 года"
+        },
+        {
+          "id": 1003,
+          "name": "Экономика",
+          "category": "Экономика",
+          "minScores": {
+            "math": 75,
+            "russian": 73,
+            "social": 78
+          },
+          "budgetPlaces": 80,
+          "cost": 290000,
+          "duration": "4 года"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "МГИМО",
+      "city": "Москва",
+      "rating": 93,
+      "type": "Государственный",
+      "website": "https://mgimo.ru",
+      "directions": [
+        {
+          "id": 1101,
+          "name": "Международные отношения",
+          "category": "Международные",
+          "minScores": {
+            "foreign": 90,
+            "history": 85,
+            "russian": 88
+          },
+          "budgetPlaces": 50,
+          "cost": 650000,
+          "duration": "4 года"
+        },
+        {
+          "id": 1102,
+          "name": "Международная журналистика",
+          "category": "Медиа",
+          "minScores": {
+            "foreign": 85,
+            "literature": 83,
+            "russian": 85
+          },
+          "budgetPlaces": 35,
+          "cost": 600000,
+          "duration": "4 года"
+        },
+        {
+          "id": 1103,
+          "name": "Мировая экономика",
+          "category": "Экономика",
+          "minScores": {
+            "foreign": 88,
+            "math": 83,
+            "russian": 85
+          },
+          "budgetPlaces": 45,
+          "cost": 620000,
+          "duration": "4 года"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "РЭУ им. Г.В. Плеханова",
+      "city": "Москва",
+      "rating": 86,
+      "type": "Государственный",
+      "website": "https://rea.ru",
+      "directions": [
+        {
+          "id": 1201,
+          "name": "Экономика",
+          "category": "Экономика",
+          "minScores": {
+            "math": 80,
+            "russian": 78,
+            "social": 82
+          },
+          "budgetPlaces": 100,
+          "cost": 350000,
+          "duration": "4 года"
+        },
+        {
+          "id": 1202,
+          "name": "Менеджмент",
+          "category": "Экономика",
+          "minScores": {
+            "math": 78,
+            "russian": 75,
+            "social": 80
+          },
+          "budgetPlaces": 90,
+          "cost": 330000,
+          "duration": "4 года"
+        },
+        {
+          "id": 1203,
+          "name": "Торговое дело",
+          "category": "Экономика",
+          "minScores": {
+            "math": 75,
+            "russian": 73,
+            "social": 78
+          },
+          "budgetPlaces": 80,
+          "cost": 310000,
+          "duration": "4 года"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Финансовый университет",
+      "city": "Москва",
+      "rating": 85,
+      "type": "Государственный",
+      "website": "https://fa.ru",
+      "directions": [
+        {
+          "id": 1301,
+          "name": "Финансы и кредит",
+          "category": "Экономика",
+          "minScores": {
+            "math": 82,
+            "russian": 78,
+            "social": 80
+          },
+          "budgetPlaces": 85,
+          "cost": 360000,
+          "duration": "4 года"
+        },
+        {
+          "id": 1302,
+          "name": "Налоги и налогообложение",
+          "category": "Экономика",
+          "minScores": {
+            "math": 78,
+            "russian": 75,
+            "social": 78
+          },
+          "budgetPlaces": 60,
+          "cost": 340000,
+          "duration": "4 года"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "МАИ",
+      "city": "Москва",
+      "rating": 84,
+      "type": "Государственный",
+      "website": "https://mai.ru",
+      "directions": [
+        {
+          "id": 1401,
+          "name": "Авиастроение",
+          "category": "Инженерия",
+          "minScores": {
+            "math": 78,
+            "russian": 70,
+            "physics": 75
+          },
+          "budgetPlaces": 100,
+          "cost": 290000,
+          "duration": "5 лет"
+        },
+        {
+          "id": 1402,
+          "name": "Ракетные комплексы",
+          "category": "Инженерия",
+          "minScores": {
+            "math": 80,
+            "russian": 72,
+            "physics": 78
+          },
+          "budgetPlaces": 70,
+          "cost": 310000,
+          "duration": "5 лет"
+        },
+        {
+          "id": 1403,
+          "name": "Информатика и ВТ",
+          "category": "IT",
+          "minScores": {
+            "math": 75,
+            "russian": 70,
+            "informatics": 73
+          },
+          "budgetPlaces": 60,
+          "cost": 300000,
+          "duration": "4 года"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "МГХПА им. С.Г. Строганова",
+      "city": "Москва",
+      "rating": 82,
+      "type": "Государственный",
+      "website": "https://stroganovka.ru",
+      "directions": [
+        {
+          "id": 1501,
+          "name": "Дизайн среды",
+          "category": "Дизайн",
+          "minScores": {
+            "literature": 75,
+            "russian": 75,
+            "creative": 85
+          },
+          "budgetPlaces": 30,
+          "cost": 450000,
+          "duration": "4 года"
+        },
+        {
+          "id": 1502,
+          "name": "Графический дизайн",
+          "category": "Дизайн",
+          "minScores": {
+            "literature": 73,
+            "russian": 73,
+            "creative": 83
+          },
+          "budgetPlaces": 25,
+          "cost": 430000,
+          "duration": "4 года"
+        },
+        {
+          "id": 1503,
+          "name": "Промышленный дизайн",
+          "category": "Дизайн",
+          "minScores": {
+            "literature": 70,
+            "russian": 70,
+            "creative": 80
+          },
+          "budgetPlaces": 28,
+          "cost": 420000,
+          "duration": "4 года"
+        }
+      ]
+    }
+  ]
+}

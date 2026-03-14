@@ -7,6 +7,7 @@ import {
   Box,
   Typography,
   IconButton,
+  Chip,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
@@ -75,32 +76,31 @@ function BottomNav() {
         zIndex: 1000,
       }}
     >
-      {/* Инфо о пользователе */}
+      {/* Компактная инфо о пользователе справа */}
       {currentUser && (
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            px: 2,
-            py: 1,
-            bgcolor: "primary.light",
+            position: "absolute",
+            top: -45,
+            right: 16,
+            zIndex: 1001,
           }}
         >
-          <Typography
-            variant="body2"
-            fontWeight="bold"
-            color="primary.contrastText"
-          >
-            👋 {userData?.displayName || currentUser.email}
-          </Typography>
-          <IconButton
-            onClick={handleLogout}
-            size="small"
-            sx={{ color: "white" }}
-          >
-            <LogoutIcon />
-          </IconButton>
+          <Chip
+            icon={<span style={{ fontSize: 16 }}>👋</span>}
+            label={userData?.displayName || currentUser.email.split("@")[0]}
+            onDelete={handleLogout}
+            deleteIcon={<LogoutIcon />}
+            color="primary"
+            variant="filled"
+            sx={{
+              fontWeight: "bold",
+              height: 36,
+              "& .MuiChip-deleteIcon": {
+                fontSize: 18,
+              },
+            }}
+          />
         </Box>
       )}
 
