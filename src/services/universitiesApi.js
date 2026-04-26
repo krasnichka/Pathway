@@ -1,16 +1,26 @@
 // src/services/universitiesApi.js
 import axios from "axios";
 
+// ✅ Прямой адрес без basePath
 const API_BASE_URL = "http://localhost:3001";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 export const getAllUniversities = async () => {
-  const response = await api.get("/universities");
-  return response.data;
+  try {
+    const response = await api.get("/universities");
+    console.log("✅ Universities loaded:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Error fetching universities:", error);
+    throw error;
+  }
 };
 
 export const getUniversityById = async (id) => {

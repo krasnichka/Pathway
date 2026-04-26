@@ -11,7 +11,6 @@ import GoalsPage from "./pages/GoalsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import BottomNav from "./components/BottomNav";
-import StatsPage from "./pages/StatsPage";
 
 function App() {
   return (

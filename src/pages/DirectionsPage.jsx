@@ -33,13 +33,17 @@ import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import WorkIcon from "@mui/icons-material/Work";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { useQuery } from "@tanstack/react-query";
 import { getAllUniversities } from "../services/universitiesApi";
 import calculateRecommendations, {
   getAdmissionChanceText,
 } from "../utils/recommendationAlgorithm";
 import { useAuth } from "../context/AuthContext";
-
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../config/firebase";
+import { useNavigate } from "react-router-dom";
+import { DAILY_TASK_POOL, REST_TASKS } from "../utils/taskConstants";
 const categories = [
   "Твой ТОП",
   "Все",
@@ -72,7 +76,8 @@ const subjectNames = {
 };
 
 function DirectionsPage() {
-  const { userData } = useAuth();
+  const { userData, currentUser } = useAuth();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState("Все");
   const [showTopMatches, setShowTopMatches] = React.useState(false);
@@ -176,6 +181,87 @@ function DirectionsPage() {
     setDialogOpen(false);
     setSelectedDirection(null);
     setSelectedUniversity(null);
+  };
+
+  const handleSetAsGoal = async (university, direction) => {
+    if (!currentUser) return;
+
+    const userRef = doc(db, "users", currentUser.uid);
+    const today = new Date().toISOString().split("T")[0];
+    const currentCategory = direction.category || "IT";
+
+    // Генерируем глубинные задачи
+    const longTermTasks = [
+      {
+        id: 1,
+        title: `Подготовиться к ЕГЭ (мин. ${Object.values(direction.minScores || {}).join(", ") || "80+"} баллов)`,
+        category: "ЕГЭ",
+        completed: false,
+      },
+      {
+        id: 2,
+        title: `Изучить информацию о вузе ${university.name}`,
+        category: "Информация",
+        completed: false,
+      },
+      {
+        id: 3,
+        title: "Посетить день открытых дверей",
+        category: "Информация",
+        completed: false,
+      },
+      {
+        id: 4,
+        title: "Пройти онлайн-курс по направлению",
+        category: "Навыки",
+        completed: false,
+      },
+      {
+        id: 5,
+        title: "Написать эссе о выбранной профессии",
+        category: "Рефлексия",
+        completed: false,
+      },
+    ];
+
+    // 🔥 Генерируем ЕЖЕДНЕВНЫЕ задачи из ОБЩЕГО пула
+    const taskPool = DAILY_TASK_POOL[currentCategory] || DAILY_TASK_POOL.IT;
+    const shuffled = [...taskPool].sort(() => 0.5 - Math.random());
+    const newDailyTasks = shuffled.slice(0, 3).map((title, index) => ({
+      id: `daily_${today}_${index}`,
+      title,
+      category: currentCategory,
+      completed: false,
+      date: today,
+    }));
+
+    // 20% шанс добавить отдых
+    if (Math.random() < 0.2) {
+      const restTask =
+        REST_TASKS[Math.floor(Math.random() * REST_TASKS.length)];
+      newDailyTasks.push({
+        id: `daily_${today}_rest`,
+        title: restTask,
+        category: "Отдых",
+        completed: false,
+        date: today,
+      });
+    }
+
+    // Сохраняем ВСЁ атомарно
+    await updateDoc(userRef, {
+      goal: {
+        direction,
+        university: university.name,
+        selectedAt: today,
+        longTermTasks,
+      },
+      dailyTasks: newDailyTasks, // ✅ ПЕРЕЗАПИСЫВАЕМ старые задачи
+    });
+
+    alert(
+      `✅ Цель установлена: ${direction.name}\nЕжедневные задачи обновлены!`,
+    );
   };
 
   if (isLoading) {
@@ -753,9 +839,21 @@ function DirectionsPage() {
                   </Box>
                 </DialogContent>
 
-                <DialogActions sx={{ p: 3, pt: 0 }}>
+                <DialogActions sx={{ p: 3, pt: 0, gap: 1 }}>
                   <Button onClick={handleCloseDialog} variant="outlined">
                     Закрыть
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => {
+                      handleSetAsGoal(selectedUniversity, selectedDirection);
+                      handleCloseDialog();
+                      navigate("/goals");
+                    }}
+                    startIcon={<EmojiEventsIcon />}
+                  >
+                    Выбрать целью
                   </Button>
                   <Button
                     variant="contained"
