@@ -32,7 +32,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 
-// Список предметов для выбора
+// Списки опций (без изменений)
 const SUBJECTS = [
   "Математика",
   "Русский язык",
@@ -48,11 +48,7 @@ const SUBJECTS = [
   "Астрономия",
   "ОБЖ",
 ];
-
-// Оценки
 const GRADES = ["2", "3", "4", "5"];
-
-// Предметы ЕГЭ/ОГЭ с баллами
 const EXAM_SUBJECTS = [
   { id: "math", name: "Математика", required: true },
   { id: "russian", name: "Русский язык", required: true },
@@ -66,8 +62,6 @@ const EXAM_SUBJECTS = [
   { id: "english", name: "Иностранный язык", required: false },
   { id: "geography", name: "География", required: false },
 ];
-
-// Готовые варианты достижений
 const ACHIEVEMENTS_OPTIONS = [
   "Победитель олимпиады (школьный этап)",
   "Победитель олимпиады (муниципальный этап)",
@@ -88,8 +82,6 @@ const ACHIEVEMENTS_OPTIONS = [
   "Собственные проекты (сайт, приложение и др.)",
   "Публикации в СМИ/научных журналах",
 ];
-
-// Готовые варианты хобби
 const HOBBIES_OPTIONS = [
   "Программирование",
   "Веб-разработка",
@@ -121,8 +113,6 @@ const HOBBIES_OPTIONS = [
   "Биология/природа",
   "Волонтёрство",
 ];
-
-// Готовые варианты карьерных интересов
 const CAREER_INTERESTS_OPTIONS = [
   "IT и программирование",
   "Веб-разработка",
@@ -162,7 +152,6 @@ function ProfilePage() {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
-  // Состояния редактирования для каждого блока
   const [editMode, setEditMode] = useState({
     grade: false,
     subjects: false,
@@ -172,31 +161,21 @@ function ProfilePage() {
     interests: false,
   });
 
-  // Состояния формы
   const [grade, setGrade] = useState(userData?.grade || "");
   const [favoriteSubjects, setFavoriteSubjects] = useState(
     userData?.favoriteSubjects || [],
   );
   const [newSubject, setNewSubject] = useState("");
   const [newSubjectGrade, setNewSubjectGrade] = useState("5");
-
-  // ЕГЭ/ОГЭ
   const [examScores, setExamScores] = useState(userData?.examScores || {});
-
-  // Достижения
   const [achievements, setAchievements] = useState(
     userData?.achievements || [],
   );
-
-  // Хобби
   const [hobbies, setHobbies] = useState(userData?.hobbies || []);
-
-  // Карьерные интересы
   const [careerInterests, setCareerInterests] = useState(
     userData?.careerInterests || [],
   );
 
-  // Загрузка данных при монтировании
   useEffect(() => {
     if (userData) {
       setGrade(userData.grade || "");
@@ -205,8 +184,6 @@ function ProfilePage() {
       setAchievements(userData.achievements || []);
       setHobbies(userData.hobbies || []);
       setCareerInterests(userData.careerInterests || []);
-
-      // Если есть данные, показываем их в режиме просмотра
       if (userData.grade || userData.favoriteSubjects?.length > 0) {
         setEditMode({
           grade: false,
@@ -220,12 +197,8 @@ function ProfilePage() {
     }
   }, [userData]);
 
-  // Переключение режима редактирования
-  const toggleEditMode = (field) => {
+  const toggleEditMode = (field) =>
     setEditMode((prev) => ({ ...prev, [field]: !prev[field] }));
-  };
-
-  // Добавление предмета
   const handleAddSubject = () => {
     if (newSubject && !favoriteSubjects.find((s) => s.name === newSubject)) {
       setFavoriteSubjects([
@@ -236,57 +209,35 @@ function ProfilePage() {
       setNewSubjectGrade("5");
     }
   };
-
-  // Удаление предмета
-  const handleRemoveSubject = (subjectName) => {
-    setFavoriteSubjects(favoriteSubjects.filter((s) => s.name !== subjectName));
-  };
-
-  // Изменение балла ЕГЭ
-  const handleExamScoreChange = (subjectId, value) => {
+  const handleRemoveSubject = (name) =>
+    setFavoriteSubjects(favoriteSubjects.filter((s) => s.name !== name));
+  const handleExamScoreChange = (id, value) => {
     const numValue =
       value === "" ? "" : Math.min(100, Math.max(0, parseInt(value) || 0));
-    setExamScores({
-      ...examScores,
-      [subjectId]: numValue,
-    });
+    setExamScores({ ...examScores, [id]: numValue });
   };
+  const toggleAchievement = (a) =>
+    setAchievements(
+      achievements.includes(a)
+        ? achievements.filter((x) => x !== a)
+        : [...achievements, a],
+    );
+  const toggleHobby = (h) =>
+    setHobbies(
+      hobbies.includes(h) ? hobbies.filter((x) => x !== h) : [...hobbies, h],
+    );
+  const toggleInterest = (i) =>
+    setCareerInterests(
+      careerInterests.includes(i)
+        ? careerInterests.filter((x) => x !== i)
+        : [...careerInterests, i],
+    );
 
-  // Переключение достижения
-  const toggleAchievement = (achievement) => {
-    if (achievements.includes(achievement)) {
-      setAchievements(achievements.filter((a) => a !== achievement));
-    } else {
-      setAchievements([...achievements, achievement]);
-    }
-  };
-
-  // Переключение хобби
-  const toggleHobby = (hobby) => {
-    if (hobbies.includes(hobby)) {
-      setHobbies(hobbies.filter((h) => h !== hobby));
-    } else {
-      setHobbies([...hobbies, hobby]);
-    }
-  };
-
-  // Переключение интереса
-  const toggleInterest = (interest) => {
-    if (careerInterests.includes(interest)) {
-      setCareerInterests(careerInterests.filter((i) => i !== interest));
-    } else {
-      setCareerInterests([...careerInterests, interest]);
-    }
-  };
-
-  // Сохранение профиля
   const handleSaveProfile = async () => {
     if (!currentUser) return;
-
     setLoading(true);
     setError("");
     setSuccess("");
-
     try {
       const userRef = doc(db, "users", currentUser.uid);
       await updateDoc(userRef, {
@@ -298,14 +249,8 @@ function ProfilePage() {
         careerInterests,
         updatedAt: new Date(),
       });
-
-      // Обновляем контекст
       const updatedDoc = await getDoc(userRef);
-      if (updatedDoc.exists()) {
-        setUserData(updatedDoc.data());
-      }
-
-      // Переключаем все блоки в режим просмотра
+      if (updatedDoc.exists()) setUserData(updatedDoc.data());
       setEditMode({
         grade: false,
         subjects: false,
@@ -314,58 +259,91 @@ function ProfilePage() {
         hobbies: false,
         interests: false,
       });
-
-      setSuccess("Профиль успешно сохранён! 🎉");
+      setSuccess("Профиль успешно сохранён");
       setTimeout(() => setSuccess(""), 3000);
     } catch (err) {
-      console.error("Ошибка сохранения:", err);
-      setError("Не удалось сохранить профиль. Попробуй ещё раз.");
+      console.error("Ошибка:", err);
+      setError("Не удалось сохранить профиль");
     } finally {
       setLoading(false);
     }
   };
 
-  // Получение заполненных экзаменов
-  const getFilledExams = () => {
-    return EXAM_SUBJECTS.filter((subj) => examScores[subj.id]);
+  const getFilledExams = () => EXAM_SUBJECTS.filter((s) => examScores[s.id]);
+
+  // Общий стиль для карточек
+  const cardStyle = {
+    mb: 3,
+    borderRadius: 3,
+    border: "1px solid",
+    borderColor: "divider",
+    transition: "all 0.2s ease",
+    "&:hover": { boxShadow: 4 },
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: 4, pb: 10 }}>
+    <Container maxWidth="lg" sx={{ py: 8, pb: 16 }}>
       {/* Приветствие */}
       <Paper
         sx={{
-          p: 3,
-          mb: 3,
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          p: 6,
+          mb: 6,
+          textAlign: "center",
+          background: "linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)",
           color: "white",
+          borderRadius: 3,
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <Typography variant="h4" fontWeight="bold">
-          👋 Привет, {userData?.displayName || currentUser?.email}!
+        <Typography variant="h3" fontWeight="800" gutterBottom>
+          Привет,{" "}
+          {userData?.displayName?.split(" ")[0] ||
+            currentUser?.email?.split("@")[0]}
         </Typography>
-        <Typography sx={{ mt: 1, opacity: 0.9 }}>
-          Заполни профиль, чтобы мы могли подобрать лучшие направления для тебя
+        <Typography
+          variant="h6"
+          sx={{ opacity: 0.95, maxWidth: 600, mx: "auto" }}
+        >
+          Заполни профиль — и мы подберём направления, которые подходят именно
+          тебе
         </Typography>
       </Paper>
 
-      {success && <Alert severity="success">{success}</Alert>}
-      {error && <Alert severity="error">{error}</Alert>}
+      {success && (
+        <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>
+          {success}
+        </Alert>
+      )}
+      {error && (
+        <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
+          {error}
+        </Alert>
+      )}
 
       {/* Класс */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
+      <Card sx={cardStyle}>
+        <CardContent sx={{ p: 4 }}>
           <Box
             sx={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              mb: 2,
+              mb: 3,
             }}
           >
-            <Typography variant="h6">📚 Класс обучения</Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+              <SchoolIcon sx={{ color: "primary.main", fontSize: 28 }} />
+              <Typography variant="h6" fontWeight="700">
+                Класс обучения
+              </Typography>
+            </Box>
             {!editMode.grade && grade && (
-              <IconButton onClick={() => toggleEditMode("grade")} size="small">
+              <IconButton
+                onClick={() => toggleEditMode("grade")}
+                size="small"
+                sx={{ color: "text.secondary" }}
+              >
                 <EditIcon />
               </IconButton>
             )}
@@ -391,9 +369,9 @@ function ProfilePage() {
           <Collapse in={!editMode.grade && !!grade}>
             <Box
               sx={{
-                p: 2,
+                p: 3,
                 bgcolor: "primary.light",
-                borderRadius: 1,
+                borderRadius: 2,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
@@ -401,7 +379,7 @@ function ProfilePage() {
             >
               <Typography
                 variant="h5"
-                fontWeight="bold"
+                fontWeight="700"
                 color="primary.contrastText"
               >
                 {grade} класс
@@ -413,24 +391,27 @@ function ProfilePage() {
       </Card>
 
       {/* Любимые предметы */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
+      <Card sx={cardStyle}>
+        <CardContent sx={{ p: 4 }}>
           <Box
             sx={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              mb: 2,
+              mb: 3,
             }}
           >
-            <Typography variant="h6">
-              <SchoolIcon sx={{ mr: 1, verticalAlign: "middle" }} />
-              Любимые предметы и оценки
-            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+              <SchoolIcon sx={{ color: "primary.main", fontSize: 28 }} />
+              <Typography variant="h6" fontWeight="700">
+                Любимые предметы
+              </Typography>
+            </Box>
             {!editMode.subjects && favoriteSubjects.length > 0 && (
               <IconButton
                 onClick={() => toggleEditMode("subjects")}
                 size="small"
+                sx={{ color: "text.secondary" }}
               >
                 <EditIcon />
               </IconButton>
@@ -438,11 +419,10 @@ function ProfilePage() {
           </Box>
 
           <Collapse in={editMode.subjects || favoriteSubjects.length === 0}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Укажи предметы, которые тебе нравятся и твои оценки по ним
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              Укажи предметы, которые тебе нравятся, и оценки по ним
             </Typography>
-
-            <Grid container spacing={2} sx={{ mb: 2 }}>
+            <Grid container spacing={2} sx={{ mb: 3 }}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   select
@@ -451,9 +431,9 @@ function ProfilePage() {
                   value={newSubject}
                   onChange={(e) => setNewSubject(e.target.value)}
                 >
-                  {SUBJECTS.map((subject) => (
-                    <MenuItem key={subject} value={subject}>
-                      {subject}
+                  {SUBJECTS.map((s) => (
+                    <MenuItem key={s} value={s}>
+                      {s}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -479,21 +459,19 @@ function ProfilePage() {
                   variant="contained"
                   startIcon={<AddIcon />}
                   onClick={handleAddSubject}
-                  sx={{ height: "100%" }}
+                  sx={{ height: "100%", borderRadius: 2 }}
                 >
                   Добавить
                 </Button>
               </Grid>
             </Grid>
-
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-              {favoriteSubjects.map((subject) => (
+              {favoriteSubjects.map((s) => (
                 <Chip
-                  key={subject.name}
-                  label={`${subject.name} (${subject.grade})`}
-                  onDelete={() => handleRemoveSubject(subject.name)}
-                  color="primary"
-                  variant="outlined"
+                  key={s.name}
+                  label={`${s.name} • ${s.grade}`}
+                  onDelete={() => handleRemoveSubject(s.name)}
+                  sx={{ borderRadius: 2 }}
                 />
               ))}
             </Box>
@@ -501,17 +479,15 @@ function ProfilePage() {
 
           <Collapse in={!editMode.subjects && favoriteSubjects.length > 0}>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-              {favoriteSubjects.map((subject) => (
+              {favoriteSubjects.map((s) => (
                 <Chip
-                  key={subject.name}
-                  label={`${subject.name} - ${subject.grade}`}
-                  color="primary"
-                  sx={{ fontWeight: "bold" }}
+                  key={s.name}
+                  label={`${s.name} • ${s.grade}`}
+                  sx={{ borderRadius: 2, fontWeight: "600" }}
                 />
               ))}
             </Box>
           </Collapse>
-
           {favoriteSubjects.length === 0 && !editMode.subjects && (
             <Typography color="text.secondary" sx={{ mt: 2 }}>
               Не указано
@@ -521,43 +497,51 @@ function ProfilePage() {
       </Card>
 
       {/* ЕГЭ/ОГЭ */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
+      <Card sx={cardStyle}>
+        <CardContent sx={{ p: 4 }}>
           <Box
             sx={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              mb: 2,
+              mb: 3,
             }}
           >
-            <Typography variant="h6">📝 Баллы ЕГЭ/ОГЭ</Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+              <SchoolIcon sx={{ color: "primary.main", fontSize: 28 }} />
+              <Typography variant="h6" fontWeight="700">
+                Баллы ЕГЭ/ОГЭ
+              </Typography>
+            </Box>
             {!editMode.exams && Object.keys(examScores).length > 0 && (
-              <IconButton onClick={() => toggleEditMode("exams")} size="small">
+              <IconButton
+                onClick={() => toggleEditMode("exams")}
+                size="small"
+                sx={{ color: "text.secondary" }}
+              >
                 <EditIcon />
               </IconButton>
             )}
           </Box>
 
           <Collapse in={editMode.exams || Object.keys(examScores).length === 0}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Укажи свои баллы (необязательно, но поможет с рекомендациями)
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              Укажи баллы — это поможет нам точнее подобрать направления
             </Typography>
-
             <Grid container spacing={2}>
-              {EXAM_SUBJECTS.map((subject) => (
-                <Grid item xs={12} sm={6} key={subject.id}>
+              {EXAM_SUBJECTS.map((s) => (
+                <Grid item xs={12} sm={6} key={s.id}>
                   <TextField
                     fullWidth
-                    label={subject.name}
+                    label={s.name}
                     type="number"
-                    value={examScores[subject.id] || ""}
+                    value={examScores[s.id] || ""}
                     onChange={(e) =>
-                      handleExamScoreChange(subject.id, e.target.value)
+                      handleExamScoreChange(s.id, e.target.value)
                     }
-                    placeholder="0-100"
+                    placeholder="0–100"
                     inputProps={{ min: 0, max: 100 }}
-                    helperText={subject.required ? "Обязательный предмет" : ""}
+                    helperText={s.required ? "Обязательный предмет" : ""}
                   />
                 </Grid>
               ))}
@@ -565,14 +549,14 @@ function ProfilePage() {
           </Collapse>
 
           <Collapse in={!editMode.exams && Object.keys(examScores).length > 0}>
-            <Grid container spacing={1}>
-              {getFilledExams().map((subject) => (
-                <Grid item xs={12} sm={6} key={subject.id}>
+            <Grid container spacing={2}>
+              {getFilledExams().map((s) => (
+                <Grid item xs={12} sm={6} key={s.id}>
                   <Box
                     sx={{
-                      p: 1.5,
+                      p: 2.5,
                       bgcolor: "success.light",
-                      borderRadius: 1,
+                      borderRadius: 2,
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
@@ -580,24 +564,23 @@ function ProfilePage() {
                   >
                     <Typography
                       variant="body2"
-                      fontWeight="bold"
+                      fontWeight="600"
                       color="success.contrastText"
                     >
-                      {subject.name}
+                      {s.name}
                     </Typography>
                     <Typography
                       variant="h6"
-                      fontWeight="bold"
+                      fontWeight="700"
                       color="success.contrastText"
                     >
-                      {examScores[subject.id]} баллов
+                      {examScores[s.id]} баллов
                     </Typography>
                   </Box>
                 </Grid>
               ))}
             </Grid>
           </Collapse>
-
           {Object.keys(examScores).length === 0 && !editMode.exams && (
             <Typography color="text.secondary" sx={{ mt: 2 }}>
               Не указано
@@ -606,25 +589,28 @@ function ProfilePage() {
         </CardContent>
       </Card>
 
-      {/* Академические достижения */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
+      {/* Достижения */}
+      <Card sx={cardStyle}>
+        <CardContent sx={{ p: 4 }}>
           <Box
             sx={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              mb: 2,
+              mb: 3,
             }}
           >
-            <Typography variant="h6">
-              <EmojiEventsIcon sx={{ mr: 1, verticalAlign: "middle" }} />
-              Академические достижения
-            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+              <EmojiEventsIcon sx={{ color: "warning.main", fontSize: 28 }} />
+              <Typography variant="h6" fontWeight="700">
+                Достижения
+              </Typography>
+            </Box>
             {!editMode.achievements && achievements.length > 0 && (
               <IconButton
                 onClick={() => toggleEditMode("achievements")}
                 size="small"
+                sx={{ color: "text.secondary" }}
               >
                 <EditIcon />
               </IconButton>
@@ -632,49 +618,48 @@ function ProfilePage() {
           </Box>
 
           <Collapse in={editMode.achievements || achievements.length === 0}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Выбери свои достижения из списка
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              Выбери свои достижения
             </Typography>
-
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 gap: 1,
-                maxHeight: 300,
+                maxHeight: 280,
                 overflowY: "auto",
                 p: 1,
               }}
             >
-              {ACHIEVEMENTS_OPTIONS.map((achievement) => (
+              {ACHIEVEMENTS_OPTIONS.map((a) => (
                 <FormControlLabel
-                  key={achievement}
+                  key={a}
                   control={
                     <Checkbox
-                      checked={achievements.includes(achievement)}
-                      onChange={() => toggleAchievement(achievement)}
+                      checked={achievements.includes(a)}
+                      onChange={() => toggleAchievement(a)}
                     />
                   }
-                  label={achievement}
+                  label={a}
                   sx={{ m: 0 }}
                 />
               ))}
             </Box>
-
             {achievements.length > 0 && (
-              <Box sx={{ mt: 2 }}>
-                <Typography variant="body2" gutterBottom fontWeight="bold">
+              <Box sx={{ mt: 3 }}>
+                <Typography variant="body2" fontWeight="600" gutterBottom>
                   Выбрано: {achievements.length}
                 </Typography>
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                  {achievements.map((achievement) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                  {achievements.map((a) => (
                     <Chip
-                      key={achievement}
-                      label={achievement}
-                      onDelete={() => toggleAchievement(achievement)}
+                      key={a}
+                      label={a}
+                      onDelete={() => toggleAchievement(a)}
                       size="small"
                       color="warning"
                       variant="outlined"
+                      sx={{ borderRadius: 2 }}
                     />
                   ))}
                 </Box>
@@ -684,24 +669,23 @@ function ProfilePage() {
 
           <Collapse in={!editMode.achievements && achievements.length > 0}>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              {achievements.map((achievement, index) => (
+              {achievements.map((a, i) => (
                 <Box
-                  key={index}
+                  key={i}
                   sx={{
-                    p: 1.5,
+                    p: 2,
                     bgcolor: "warning.light",
-                    borderRadius: 1,
+                    borderRadius: 2,
                     color: "warning.contrastText",
                   }}
                 >
-                  <Typography variant="body2" fontWeight="bold">
-                    {achievement}
+                  <Typography variant="body2" fontWeight="600">
+                    {a}
                   </Typography>
                 </Box>
               ))}
             </Box>
           </Collapse>
-
           {achievements.length === 0 && !editMode.achievements && (
             <Typography color="text.secondary" sx={{ mt: 2 }}>
               Не указано
@@ -710,25 +694,28 @@ function ProfilePage() {
         </CardContent>
       </Card>
 
-      {/* Хобби и увлечения */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
+      {/* Хобби */}
+      <Card sx={cardStyle}>
+        <CardContent sx={{ p: 4 }}>
           <Box
             sx={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              mb: 2,
+              mb: 3,
             }}
           >
-            <Typography variant="h6">
-              <PsychologyIcon sx={{ mr: 1, verticalAlign: "middle" }} />
-              Хобби и увлечения
-            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+              <PsychologyIcon sx={{ color: "secondary.main", fontSize: 28 }} />
+              <Typography variant="h6" fontWeight="700">
+                Хобби
+              </Typography>
+            </Box>
             {!editMode.hobbies && hobbies.length > 0 && (
               <IconButton
                 onClick={() => toggleEditMode("hobbies")}
                 size="small"
+                sx={{ color: "text.secondary" }}
               >
                 <EditIcon />
               </IconButton>
@@ -736,18 +723,18 @@ function ProfilePage() {
           </Box>
 
           <Collapse in={editMode.hobbies || hobbies.length === 0}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Выбери что тебе нравится делать
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              Что тебе нравится делать
             </Typography>
-
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-              {HOBBIES_OPTIONS.map((hobby) => (
+              {HOBBIES_OPTIONS.map((h) => (
                 <Chip
-                  key={hobby}
-                  label={hobby}
-                  onClick={() => toggleHobby(hobby)}
-                  color={hobbies.includes(hobby) ? "secondary" : "default"}
-                  variant={hobbies.includes(hobby) ? "filled" : "outlined"}
+                  key={h}
+                  label={h}
+                  onClick={() => toggleHobby(h)}
+                  color={hobbies.includes(h) ? "secondary" : "default"}
+                  variant={hobbies.includes(h) ? "filled" : "outlined"}
+                  sx={{ borderRadius: 2 }}
                 />
               ))}
             </Box>
@@ -755,17 +742,16 @@ function ProfilePage() {
 
           <Collapse in={!editMode.hobbies && hobbies.length > 0}>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-              {hobbies.map((hobby) => (
+              {hobbies.map((h) => (
                 <Chip
-                  key={hobby}
-                  label={hobby}
+                  key={h}
+                  label={h}
                   color="secondary"
-                  sx={{ fontWeight: "bold" }}
+                  sx={{ borderRadius: 2, fontWeight: "600" }}
                 />
               ))}
             </Box>
           </Collapse>
-
           {hobbies.length === 0 && !editMode.hobbies && (
             <Typography color="text.secondary" sx={{ mt: 2 }}>
               Не указано
@@ -774,25 +760,28 @@ function ProfilePage() {
         </CardContent>
       </Card>
 
-      {/* Карьерные интересы */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
+      {/* Интересы */}
+      <Card sx={cardStyle}>
+        <CardContent sx={{ p: 4 }}>
           <Box
             sx={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              mb: 2,
+              mb: 3,
             }}
           >
-            <Typography variant="h6">
-              <WorkIcon sx={{ mr: 1, verticalAlign: "middle" }} />
-              Карьерные интересы
-            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+              <WorkIcon sx={{ color: "primary.main", fontSize: 28 }} />
+              <Typography variant="h6" fontWeight="700">
+                Карьерные интересы
+              </Typography>
+            </Box>
             {!editMode.interests && careerInterests.length > 0 && (
               <IconButton
                 onClick={() => toggleEditMode("interests")}
                 size="small"
+                sx={{ color: "text.secondary" }}
               >
                 <EditIcon />
               </IconButton>
@@ -800,48 +789,50 @@ function ProfilePage() {
           </Box>
 
           <Collapse in={editMode.interests || careerInterests.length === 0}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
               Какие направления тебя привлекают
             </Typography>
-
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 gap: 1,
-                maxHeight: 300,
+                maxHeight: 280,
                 overflowY: "auto",
                 p: 1,
               }}
             >
-              {CAREER_INTERESTS_OPTIONS.map((interest) => (
+              {CAREER_INTERESTS_OPTIONS.map((i) => (
                 <FormControlLabel
-                  key={interest}
+                  key={i}
                   control={
                     <Checkbox
-                      checked={careerInterests.includes(interest)}
-                      onChange={() => toggleInterest(interest)}
+                      checked={careerInterests.includes(i)}
+                      onChange={() => toggleInterest(i)}
                     />
                   }
-                  label={interest}
+                  label={i}
                   sx={{ m: 0 }}
                 />
               ))}
             </Box>
-
             {careerInterests.length > 0 && (
-              <Box sx={{ mt: 2 }}>
-                <Typography variant="body2" gutterBottom fontWeight="bold">
-                  Выбрано интересов: {careerInterests.length}
+              <Box sx={{ mt: 3 }}>
+                <Typography variant="body2" fontWeight="600" gutterBottom>
+                  Выбрано: {careerInterests.length}
                 </Typography>
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                  {careerInterests.map((interest) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                  {careerInterests.map((i) => (
                     <Chip
-                      key={interest}
-                      label={interest}
-                      onDelete={() => toggleInterest(interest)}
+                      key={i}
+                      label={i}
+                      onDelete={() => toggleInterest(i)}
                       size="small"
-                      sx={{ bgcolor: "#e3f2fd", color: "#1976d2" }}
+                      sx={{
+                        bgcolor: "#e3f2fd",
+                        color: "#1976d2",
+                        borderRadius: 2,
+                      }}
                     />
                   ))}
                 </Box>
@@ -851,20 +842,20 @@ function ProfilePage() {
 
           <Collapse in={!editMode.interests && careerInterests.length > 0}>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-              {careerInterests.map((interest) => (
+              {careerInterests.map((i) => (
                 <Chip
-                  key={interest}
-                  label={interest}
+                  key={i}
+                  label={i}
                   sx={{
                     bgcolor: "#e3f2fd",
                     color: "#1976d2",
-                    fontWeight: "bold",
+                    borderRadius: 2,
+                    fontWeight: "600",
                   }}
                 />
               ))}
             </Box>
           </Collapse>
-
           {careerInterests.length === 0 && !editMode.interests && (
             <Typography color="text.secondary" sx={{ mt: 2 }}>
               Не указано
@@ -881,9 +872,20 @@ function ProfilePage() {
         startIcon={<SaveIcon />}
         onClick={handleSaveProfile}
         disabled={loading}
-        sx={{ py: 2, mb: 3 }}
+        sx={{
+          py: 2,
+          mb: 3,
+          borderRadius: 3,
+          fontSize: "1.1rem",
+          fontWeight: "600",
+          boxShadow: "0 4px 14px rgba(25, 118, 210, 0.3)",
+          "&:hover": {
+            boxShadow: "0 6px 20px rgba(25, 118, 210, 0.4)",
+            transform: "translateY(-2px)",
+          },
+        }}
       >
-        {loading ? "Сохранение..." : "Сохранить все изменения"}
+        {loading ? "Сохранение..." : "Сохранить изменения"}
       </Button>
     </Container>
   );
