@@ -1,16 +1,103 @@
-# React + Vite
+# 🎓 ПрофВыбор
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<div align="center">
 
-Currently, two official plugins are available:
+**Интеллектуальная система выбора профессии для школьников**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[![React](https://img.shields.io/badge/React-18.3.1-blue?logo=react&style=for-the-badge)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-7.3.1-purple?logo=vite&style=for-the-badge)](https://vitejs.dev/)
+[![Firebase](https://img.shields.io/badge/Firebase-Latest-orange?logo=firebase&style=for-the-badge)](https://firebase.google.com/)
+[![Material UI](https://img.shields.io/badge/Material--UI-6.0.0-blue?logo=mui&style=for-the-badge)](https://mui.com/)
 
-## React Compiler
+</div>
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🎯 О проекте
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**ПрофВыбор** помогает школьникам 5–11 классов осознанно выбрать профессию на основе реальных данных, а не случайных тестов.
+
+### 📊 Актуальность
+
+<div align="center">
+
+| Проблема | Статистика |
+|----------|------------|
+| 😰 Стресс при выборе | **39%** школьников |
+| ⏰ Поздний выбор | **45%** после школы |
+| ❓ Не знают где искать | **90%** школьников |
+
+</div>
+
+---
+
+## ✨ Возможности
+
+### 🧠 Умный алгоритм
+- Анализ **5 критериев** с весовыми коэффициентами
+- Персональные рекомендации с **процентом совпадения**
+- Оценка **шанса поступления**
+
+### 📋 Профиль пользователя
+- 📚 Класс обучения
+- 📝 Предметы и оценки
+- 🏆 Достижения и олимпиады
+- 🎨 Хобби и интересы
+
+### 🎮 Геймификация
+- 🔥 **Огонёк** — серия дней активности
+- 🏆 **Награды** за регулярность
+- ✅ **Ежедневные задачи**
+
+### 📊 Статистика
+- 📈 Графики успеваемости
+- 📅 Динамика интересов
+- 🎯 Прогресс подготовки
+
+---
+
+## 🛠 Технологии
+
+<div align="center">
+
+![React](https://img.shields.io/badge/-React-61DAFB?logo=react&logoColor=white&style=flat-square)
+![Vite](https://img.shields.io/badge/-Vite-646CFF?logo=vite&logoColor=white&style=flat-square)
+![Firebase](https://img.shields.io/badge/-Firebase-FFCA28?logo=firebase&logoColor=black&style=flat-square)
+![Material UI](https://img.shields.io/badge/-Material--UI-0081CB?logo=mui&logoColor=white&style=flat-square)
+![Highcharts](https://img.shields.io/badge/-Highcharts-4572A7?logo=highcharts&logoColor=white&style=flat-square)
+
+</div>
+
+---
+
+## 📸 Скриншоты
+
+<div align="center">
+
+![Главная](screenshots/home.png)
+*Главная страница*
+
+![Профиль](screenshots/profile.png)
+*Профиль пользователя*
+
+![Рекомендации](screenshots/directions.png)
+*Умные рекомендации*
+
+![Статистика](screenshots/stats.png)
+*Визуализация данных*
+
+![Цели](screenshots/goals.png)
+*Геймификация и цели*
+
+</div>
+
+---
+
+## 🎯 Ключевые фичи
+
+### 💡 Алгоритм подбора
+
+```javascript
+Score = (ЕГЭ × 40%) + (Предметы × 25%) + 
+        (Интересы × 20%) + (Хобби × 10%) + 
+        (Достижения × 5%)
