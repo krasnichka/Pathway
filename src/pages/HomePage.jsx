@@ -1,12 +1,5 @@
 import * as React from "react";
-import {
-  Typography,
-  Container,
-  Box,
-  Grid,
-  Paper,
-  Button,
-} from "@mui/material";
+import { Typography, Container, Box, Grid, Paper, Button } from "@mui/material";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import PsychologyIcon from "@mui/icons-material/Psychology";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -35,7 +28,7 @@ function HomePage() {
         >
           <SchoolIcon />
           <Typography variant="subtitle1" fontWeight="600">
-            ПрофВыбор
+            ВерныйПуть
           </Typography>
         </Box>
 
@@ -51,7 +44,7 @@ function HomePage() {
             letterSpacing: "-1px",
           }}
         >
-          Твой путь к правильной профессии
+          Ваш путь к осознанному выбору образования
         </Typography>
 
         <Typography
@@ -59,8 +52,8 @@ function HomePage() {
           color="text.secondary"
           sx={{ maxWidth: 700, mx: "auto", lineHeight: 1.8, mb: 4 }}
         >
-          Система, которая помогает школьникам выбрать профессию на основе
-          реальных данных, а не случайных тестов
+          Система поддержки выбора образовательной траектории для учащихся
+          общеобразовательных учреждений
         </Typography>
 
         <Button
@@ -81,7 +74,7 @@ function HomePage() {
             },
           }}
         >
-          Начать сейчас
+          Начать
         </Button>
       </Box>
 
@@ -133,10 +126,13 @@ function HomePage() {
             школьников в стрессе
           </Typography>
           <Typography color="text.secondary" sx={{ lineHeight: 1.7, mb: 2 }}>
-            старшеклассников страдают от сильного стресса при выборе профессии
-            и сдаче экзаменов
+            старшеклассников испытывают трудности при выборе направления
+            обучения и вуза
           </Typography>
-          <Typography variant="caption" sx={{ color: "text.secondary", mt: "auto" }}>
+          <Typography
+            variant="caption"
+            sx={{ color: "text.secondary", mt: "auto" }}
+          >
             ТАСС, 2025
           </Typography>
         </Paper>
@@ -167,13 +163,16 @@ function HomePage() {
             45%
           </Typography>
           <Typography variant="h6" fontWeight="600" gutterBottom>
-            выбирают поздно
+            выбирают направление поздно
           </Typography>
           <Typography color="text.secondary" sx={{ lineHeight: 1.7, mb: 2 }}>
-            россиян определяют профессию только после окончания школы, а не
-            заранее
+            учащихся определяют образовательную траекторию только после
+            окончания школы
           </Typography>
-          <Typography variant="caption" sx={{ color: "text.secondary", mt: "auto" }}>
+          <Typography
+            variant="caption"
+            sx={{ color: "text.secondary", mt: "auto" }}
+          >
             Авито Работа, 2024
           </Typography>
         </Paper>
@@ -204,12 +203,16 @@ function HomePage() {
             90%
           </Typography>
           <Typography variant="h6" fontWeight="600" gutterBottom>
-            не знают куда смотреть
+            не знают, где искать информацию
           </Typography>
           <Typography color="text.secondary" sx={{ lineHeight: 1.7, mb: 2 }}>
-            школьников не понимают, где искать информацию о будущей профессии
+            школьников испытывают дефицит качественной информации о направлениях
+            обучения и требованиях вузов
           </Typography>
-          <Typography variant="caption" sx={{ color: "text.secondary", mt: "auto" }}>
+          <Typography
+            variant="caption"
+            sx={{ color: "text.secondary", mt: "auto" }}
+          >
             Pedsovet.org, 2022
           </Typography>
         </Paper>
@@ -222,7 +225,7 @@ function HomePage() {
           fontWeight="700"
           sx={{ mb: 5, textAlign: "center" }}
         >
-          Как мы помогаем
+          Как работает система
         </Typography>
 
         <Paper
@@ -234,88 +237,101 @@ function HomePage() {
             borderColor: "divider",
           }}
         >
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={4}>
-              <Box sx={{ textAlign: "center" }}>
-                <Box
-                  sx={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: "50%",
-                    bgcolor: "primary.main",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    mx: "auto",
-                    mb: 2,
-                  }}
-                >
-                  <CheckCircleIcon sx={{ fontSize: 40 }} />
-                </Box>
-                <Typography variant="h6" fontWeight="700" gutterBottom>
-                  Не просто тесты
-                </Typography>
-                <Typography color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                  Учитываем личный опыт, хобби и реальные достижения
-                </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 4,
+              justifyContent: "center",
+            }}
+          >
+            {/* Персонализация */}
+            <Box
+              sx={{ flex: "1 1 250px", maxWidth: "350px", textAlign: "center" }}
+            >
+              <Box
+                sx={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: "50%",
+                  bgcolor: "primary.main",
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  mx: "auto",
+                  mb: 2,
+                }}
+              >
+                <CheckCircleIcon sx={{ fontSize: 40 }} />
               </Box>
-            </Grid>
+              <Typography variant="h6" fontWeight="700" gutterBottom>
+                Персонализация
+              </Typography>
+              <Typography color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                Учитываем Ваши оценки, интересы и достижения для формирования
+                индивидуальных рекомендаций
+              </Typography>
+            </Box>
 
-            <Grid item xs={12} md={4}>
-              <Box sx={{ textAlign: "center" }}>
-                <Box
-                  sx={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: "50%",
-                    bgcolor: "success.main",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    mx: "auto",
-                    mb: 2,
-                  }}
-                >
-                  <TrendingUpIcon sx={{ fontSize: 40 }} />
-                </Box>
-                <Typography variant="h6" fontWeight="700" gutterBottom>
-                  Сопровождение
-                </Typography>
-                <Typography color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                  Помогаем ставить цели и поддерживаем мотивацию каждый день
-                </Typography>
+            {/* Поддержка */}
+            <Box
+              sx={{ flex: "1 1 250px", maxWidth: "350px", textAlign: "center" }}
+            >
+              <Box
+                sx={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: "50%",
+                  bgcolor: "success.main",
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  mx: "auto",
+                  mb: 2,
+                }}
+              >
+                <TrendingUpIcon sx={{ fontSize: 40 }} />
               </Box>
-            </Grid>
+              <Typography variant="h6" fontWeight="700" gutterBottom>
+                Поддержка
+              </Typography>
+              <Typography color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                Помогаем ставить образовательные цели и отслеживать прогресс на
+                каждом этапе
+              </Typography>
+            </Box>
 
-            <Grid item xs={12} md={4}>
-              <Box sx={{ textAlign: "center" }}>
-                <Box
-                  sx={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: "50%",
-                    bgcolor: "secondary.main",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    mx: "auto",
-                    mb: 2,
-                  }}
-                >
-                  <SchoolIcon sx={{ fontSize: 40 }} />
-                </Box>
-                <Typography variant="h6" fontWeight="700" gutterBottom>
-                  Персонализация
-                </Typography>
-                <Typography color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                  Рекомендации на основе реальных оценок и интересов
-                </Typography>
+            {/* Аналитика */}
+            <Box
+              sx={{ flex: "1 1 250px", maxWidth: "350px", textAlign: "center" }}
+            >
+              <Box
+                sx={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: "50%",
+                  bgcolor: "secondary.main",
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  mx: "auto",
+                  mb: 2,
+                }}
+              >
+                <SchoolIcon sx={{ fontSize: 40 }} />
               </Box>
-            </Grid>
-          </Grid>
+              <Typography variant="h6" fontWeight="700" gutterBottom>
+                Аналитика
+              </Typography>
+              <Typography color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                Предоставляем актуальную информацию о вузах, направлениях и
+                требованиях к поступлению
+              </Typography>
+            </Box>
+          </Box>
         </Paper>
       </Box>
 
@@ -332,11 +348,11 @@ function HomePage() {
         }}
       >
         <Typography variant="h4" fontWeight="700" gutterBottom>
-          Готов найти свой путь?
+          Готовы выбрать свой образовательный путь?
         </Typography>
         <Typography sx={{ mb: 4, opacity: 0.95, maxWidth: 500, mx: "auto" }}>
-          Присоединяйся к школьникам, которые уже выбрали свою профессию
-          осознанно
+          Присоединяйтесь к учащимся, которые уже строят свою траекторию
+          осознанно и уверенно
         </Typography>
         <Button
           variant="contained"
@@ -358,7 +374,7 @@ function HomePage() {
             },
           }}
         >
-          Начать сейчас
+          Начать
         </Button>
       </Paper>
     </Container>
