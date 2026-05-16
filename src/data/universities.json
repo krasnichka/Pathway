@@ -1,6 +1,94 @@
 {
   "universities": [
     {
+      "id": 0,
+      "name": "РТУ МИРЭА",
+      "city": "Москва",
+      "rating": 86,
+      "type": "Государственный",
+      "website": "https://mirea.ru",
+      "directions": [
+        {
+          "id": 1601,
+          "name": "Программная инженерия",
+          "category": "IT",
+          "minScores": {
+            "math": 80,
+            "russian": 75,
+            "informatics": 78
+          },
+          "budgetPlaces": 85,
+          "cost": 290000,
+          "duration": "4 года"
+        },
+        {
+          "id": 1602,
+          "name": "Прикладная информатика",
+          "category": "IT",
+          "minScores": {
+            "math": 78,
+            "russian": 73,
+            "informatics": 75
+          },
+          "budgetPlaces": 75,
+          "cost": 280000,
+          "duration": "4 года"
+        },
+        {
+          "id": 1603,
+          "name": "Информационная безопасность",
+          "category": "IT",
+          "minScores": {
+            "math": 77,
+            "russian": 72,
+            "informatics": 74
+          },
+          "budgetPlaces": 60,
+          "cost": 300000,
+          "duration": "5 лет"
+        },
+        {
+          "id": 1604,
+          "name": "Робототехника и мехатроника",
+          "category": "Инженерия",
+          "minScores": {
+            "math": 75,
+            "russian": 70,
+            "physics": 73
+          },
+          "budgetPlaces": 50,
+          "cost": 270000,
+          "duration": "4 года"
+        },
+        {
+          "id": 1605,
+          "name": "Медиакоммуникации",
+          "category": "Медиа",
+          "minScores": {
+            "literature": 70,
+            "russian": 75,
+            "social": 72
+          },
+          "budgetPlaces": 45,
+          "cost": 260000,
+          "duration": "4 года"
+        },
+        {
+          "id": 1606,
+          "name": "Экономика и управление",
+          "category": "Экономика",
+          "minScores": {
+            "math": 73,
+            "russian": 72,
+            "social": 75
+          },
+          "budgetPlaces": 70,
+          "cost": 250000,
+          "duration": "4 года"
+        }
+      ]
+    },
+    {
       "id": 1,
       "name": "МГУ им. М.В. Ломоносова",
       "city": "Москва",

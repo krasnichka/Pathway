@@ -27,13 +27,14 @@ import SearchIcon from "@mui/icons-material/Search";
 import StarIcon from "@mui/icons-material/Star";
 import SchoolIcon from "@mui/icons-material/School";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import InputAdornment from "@mui/material/InputAdornment";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import WorkIcon from "@mui/icons-material/Work";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import LanguageIcon from "@mui/icons-material/Language";
 import { useQuery } from "@tanstack/react-query";
 import { getAllUniversities } from "../services/universitiesApi";
 import calculateRecommendations, {
@@ -44,6 +45,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { useNavigate } from "react-router-dom";
 import { DAILY_TASK_POOL, REST_TASKS } from "../utils/taskConstants";
+
 const categories = [
   "Твой ТОП",
   "Все",
@@ -61,18 +63,21 @@ const categories = [
   "Международные",
 ];
 
-const subjectNames = {
-  math: "Математика",
-  russian: "Русский язык",
-  physics: "Физика",
-  informatics: "Информатика",
-  chemistry: "Химия",
-  biology: "Биология",
-  social: "Обществознание",
-  history: "История",
-  literature: "Литература",
-  foreign: "Иностранный язык",
-  creative: "Творческий экзамен",
+// ✅ Вспомогательная функция: считаем сумму минимальных баллов
+const calculateTotalMinScore = (direction) => {
+  if (!direction.minScores) return 0;
+  return Object.values(direction.minScores).reduce(
+    (sum, score) => sum + score,
+    0,
+  );
+};
+
+// ✅ Вспомогательная функция: считаем сумму баллов пользователя
+const calculateUserTotalScore = (userData, direction) => {
+  if (!userData?.examScores || !direction.minScores) return 0;
+  return Object.keys(direction.minScores).reduce((sum, subject) => {
+    return sum + (userData.examScores[subject] || 0);
+  }, 0);
 };
 
 function DirectionsPage() {
@@ -103,31 +108,23 @@ function DirectionsPage() {
   // Фильтрация
   const filteredData = React.useMemo(() => {
     if (!universities) return [];
-
     let data = universities;
 
     if (showTopMatches && topRecommendations.length > 0) {
-      // Группируем рекомендации по вузам
       const recommendationsByUni = {};
-
       topRecommendations.forEach((rec) => {
         const uniId = rec.university.id;
-        if (!recommendationsByUni[uniId]) {
-          recommendationsByUni[uniId] = [];
-        }
+        if (!recommendationsByUni[uniId]) recommendationsByUni[uniId] = [];
         recommendationsByUni[uniId].push(rec);
       });
 
-      // Для каждого вуза берём топ-3 направления
       data = data
         .map((uni) => {
           const recs = recommendationsByUni[uni.id] || [];
-          // Сортируем по score и берём топ-3
           const topDirections = recs
             .sort((a, b) => b.score - a.score)
             .slice(0, 3)
             .map((rec) => rec.direction);
-
           return {
             ...uni,
             directions: topDirections,
@@ -185,16 +182,15 @@ function DirectionsPage() {
 
   const handleSetAsGoal = async (university, direction) => {
     if (!currentUser) return;
-
     const userRef = doc(db, "users", currentUser.uid);
     const today = new Date().toISOString().split("T")[0];
     const currentCategory = direction.category || "IT";
+    const totalMinScore = calculateTotalMinScore(direction);
 
-    // Генерируем глубинные задачи
     const longTermTasks = [
       {
         id: 1,
-        title: `Подготовиться к ЕГЭ (мин. ${Object.values(direction.minScores || {}).join(", ") || "80+"} баллов)`,
+        title: `Подготовиться к ЕГЭ (мин. ${totalMinScore} баллов)`,
         category: "ЕГЭ",
         completed: false,
       },
@@ -224,7 +220,6 @@ function DirectionsPage() {
       },
     ];
 
-    // 🔥 Генерируем ЕЖЕДНЕВНЫЕ задачи из ОБЩЕГО пула
     const taskPool = DAILY_TASK_POOL[currentCategory] || DAILY_TASK_POOL.IT;
     const shuffled = [...taskPool].sort(() => 0.5 - Math.random());
     const newDailyTasks = shuffled.slice(0, 3).map((title, index) => ({
@@ -235,7 +230,6 @@ function DirectionsPage() {
       date: today,
     }));
 
-    // 20% шанс добавить отдых
     if (Math.random() < 0.2) {
       const restTask =
         REST_TASKS[Math.floor(Math.random() * REST_TASKS.length)];
@@ -248,7 +242,6 @@ function DirectionsPage() {
       });
     }
 
-    // Сохраняем ВСЁ атомарно
     await updateDoc(userRef, {
       goal: {
         direction,
@@ -256,7 +249,7 @@ function DirectionsPage() {
         selectedAt: today,
         longTermTasks,
       },
-      dailyTasks: newDailyTasks, // ✅ ПЕРЕЗАПИСЫВАЕМ старые задачи
+      dailyTasks: newDailyTasks,
     });
 
     alert(
@@ -293,7 +286,6 @@ function DirectionsPage() {
             : `Найдено: ${filteredData.length} университетов`}
         </Typography>
       </Box>
-
       <TextField
         fullWidth
         placeholder="Поиск направления или вуза..."
@@ -308,7 +300,6 @@ function DirectionsPage() {
           ),
         }}
       />
-
       <Box sx={{ mb: 4, display: "flex", flexWrap: "wrap", gap: 1 }}>
         {categories.map((category) => (
           <Chip
@@ -327,13 +318,10 @@ function DirectionsPage() {
                 ? "filled"
                 : "outlined"
             }
-            sx={{
-              fontWeight: 600,
-            }}
+            sx={{ fontWeight: 600 }}
           />
         ))}
       </Box>
-
       {showTopMatches && topRecommendations.length > 0 && (
         <Paper
           sx={{
@@ -348,7 +336,6 @@ function DirectionsPage() {
           </Typography>
         </Paper>
       )}
-
       <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
         {filteredData.map((university) => (
           <Card
@@ -426,19 +413,22 @@ function DirectionsPage() {
 
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 {university.directions.map((direction) => {
-                  // Получаем рекомендацию для этого направления
                   const recommendation =
                     showTopMatches && university.directionRecommendations
                       ? university.directionRecommendations.find(
                           (rec) => rec.direction.id === direction.id,
                         )
                       : null;
-
-                  // Проверяем, что score существует и это число
                   const score =
                     recommendation && !isNaN(recommendation.score)
                       ? recommendation.score
                       : null;
+                  const totalMinScore = calculateTotalMinScore(direction);
+                  const userTotalScore = calculateUserTotalScore(
+                    userData,
+                    direction,
+                  );
+                  const meetsRequirements = userTotalScore >= totalMinScore;
 
                   return (
                     <Paper
@@ -451,13 +441,15 @@ function DirectionsPage() {
                         "&:hover": {
                           bgcolor: "primary.light",
                           borderColor: "primary.main",
-                          "& *": { color: "primary.contrastText" },
+                          "& .direction-title, & .direction-category, & .direction-info":
+                            {
+                              color: "primary.contrastText",
+                            },
                         },
                         transition: "all 0.2s",
                         position: "relative",
                       }}
                     >
-                      {/* Показываем chip только если есть валидный score */}
                       {score !== null && showTopMatches && (
                         <Chip
                           label={`🎯 ${score}%`}
@@ -494,12 +486,14 @@ function DirectionsPage() {
                           <Chip
                             label={direction.category}
                             size="small"
+                            className="direction-category"
                             sx={{ mb: 1, height: 24, fontWeight: "bold" }}
                           />
                           <Typography
                             variant="h6"
                             fontWeight="bold"
                             gutterBottom
+                            className="direction-title"
                           >
                             {direction.name}
                           </Typography>
@@ -516,46 +510,42 @@ function DirectionsPage() {
                         </Button>
                       </Box>
 
-                      <Box sx={{ mb: 2 }}>
+                      {/* ✅ ПОКАЗЫВАЕМ СУММУ БАЛЛОВ С ЦВЕТОМ */}
+                      <Box sx={{ mb: 2 }} className="direction-info">
                         <Typography
                           variant="body2"
                           fontWeight="bold"
                           gutterBottom
                         >
-                          📊 Минимальные баллы ЕГЭ:
+                          📊 Минимальные баллы ЕГЭ (сумма):
                         </Typography>
-                        <Box
+                        <Chip
+                          label={`${totalMinScore} баллов ${userData ? `(у вас: ${userTotalScore})` : ""}`}
+                          size="small"
                           sx={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            gap: 1,
-                            mb: 2,
+                            borderRadius: 2,
+                            bgcolor: meetsRequirements ? "#e8f5e9" : "#ffebee",
+                            color: meetsRequirements ? "#2e7d32" : "#c62828",
+                            fontWeight: "bold",
+                            border: `1px solid ${meetsRequirements ? "#4caf50" : "#f44336"}`,
                           }}
-                        >
-                          {Object.entries(direction.minScores).map(
-                            ([subject, minScore]) => {
-                              const userScore =
-                                userData?.examScores?.[subject] || 0;
-                              const meetsRequirement = userScore >= minScore;
-
-                              return (
-                                <Chip
-                                  key={subject}
-                                  label={`${subjectNames[subject] || subject}: ${minScore}`}
-                                  size="small"
-                                  color={meetsRequirement ? "success" : "error"}
-                                  variant="outlined"
-                                  sx={{
-                                    fontWeight: "bold",
-                                    bgcolor: meetsRequirement
-                                      ? "rgba(76, 175, 80, 0.08)"
-                                      : "rgba(244, 67, 54, 0.08)",
-                                  }}
-                                />
-                              );
-                            },
-                          )}
-                        </Box>
+                        />
+                        {userData && (
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              ml: 1,
+                              color: meetsRequirements
+                                ? "success.main"
+                                : "error.main",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {meetsRequirements
+                              ? "✓ Хватает баллов"
+                              : "✗ Не хватает баллов"}
+                          </Typography>
+                        )}
                       </Box>
 
                       <Box
@@ -577,6 +567,7 @@ function DirectionsPage() {
                               alignItems: "center",
                               fontWeight: "bold",
                             }}
+                            className="direction-info"
                           >
                             📍 Бюджет:{" "}
                             <span style={{ color: "#2e7d32", marginLeft: 4 }}>
@@ -590,6 +581,7 @@ function DirectionsPage() {
                               alignItems: "center",
                               fontWeight: "bold",
                             }}
+                            className="direction-info"
                           >
                             ⏱ Длительность:{" "}
                             <span style={{ marginLeft: 4 }}>
@@ -605,9 +597,14 @@ function DirectionsPage() {
                             fontWeight: "bold",
                             color: "primary.main",
                           }}
+                          className="direction-info"
                         >
-                          <AttachMoneyIcon sx={{ mr: 0.5 }} />
-                          {(direction.cost / 1000).toFixed(0)}к ₽/год
+                          <MonetizationOnIcon sx={{ mr: 0.5 }} />
+                          {(
+                            (direction.cost || direction.costPerYear || 0) /
+                            1000
+                          ).toFixed(0)}
+                          к ₽/год
                         </Typography>
                       </Box>
                     </Paper>
@@ -618,7 +615,6 @@ function DirectionsPage() {
           </Card>
         ))}
       </Box>
-
       <Dialog
         open={dialogOpen}
         onClose={handleCloseDialog}
@@ -636,6 +632,27 @@ function DirectionsPage() {
             const chanceInfo = recommendation
               ? getAdmissionChanceText(recommendation.admissionChance)
               : null;
+            const totalMinScore = calculateTotalMinScore(selectedDirection);
+            const userTotalScore = calculateUserTotalScore(
+              userData,
+              selectedDirection,
+            );
+            const meetsRequirements = userTotalScore >= totalMinScore;
+
+            // ✅ Список названий предметов
+            const subjectNames = {
+              math: "Математика",
+              russian: "Русский язык",
+              physics: "Физика",
+              informatics: "Информатика",
+              chemistry: "Химия",
+              biology: "Биология",
+              social: "Обществознание",
+              history: "История",
+              literature: "Литература",
+              foreign: "Иностранный язык",
+              creative: "Творческий экзамен",
+            };
 
             return (
               <>
@@ -738,31 +755,148 @@ function DirectionsPage() {
                     </Paper>
                   )}
 
+                  {/* ✅ СПИСОК ПРЕДМЕТОВ ЕГЭ */}
                   <Box sx={{ mb: 3 }}>
                     <Typography variant="h6" fontWeight="bold" gutterBottom>
-                      📋 Требования ЕГЭ
+                      📋 Необходимые предметы ЕГЭ
                     </Typography>
                     <Paper sx={{ p: 2, bgcolor: "grey.50" }}>
                       <List>
-                        {Object.entries(selectedDirection.minScores).map(
-                          ([subject, score]) => (
-                            <ListItem key={subject}>
-                              <ListItemIcon>
-                                <CheckCircleIcon
-                                  color={score >= 85 ? "success" : "primary"}
+                        {Object.entries(selectedDirection.minScores || {}).map(
+                          ([subject, score]) => {
+                            const userScore =
+                              userData?.examScores?.[subject] || 0;
+                            const meetsRequirement = userScore >= score;
+
+                            return (
+                              <ListItem
+                                key={subject}
+                                sx={{
+                                  bgcolor: "white",
+                                  mb: 1,
+                                  borderRadius: 1,
+                                }}
+                              >
+                                <ListItemIcon>
+                                  <CheckCircleIcon
+                                    color={
+                                      meetsRequirement ? "success" : "error"
+                                    }
+                                  />
+                                </ListItemIcon>
+                                <ListItemText
+                                  primary={subjectNames[subject] || subject}
+                                  secondary={`Минимальный балл: ${score}`}
                                 />
-                              </ListItemIcon>
-                              <ListItemText
-                                primary={subjectNames[subject] || subject}
-                                secondary={`Минимальный балл: ${score}`}
-                              />
-                              <Typography variant="h6" fontWeight="bold">
-                                {score}
-                              </Typography>
-                            </ListItem>
-                          ),
+                                <Box sx={{ textAlign: "right" }}>
+                                  <Typography
+                                    variant="h6"
+                                    fontWeight="bold"
+                                    color={
+                                      meetsRequirement
+                                        ? "success.main"
+                                        : "error.main"
+                                    }
+                                  >
+                                    {userScore > 0 ? userScore : "—"}
+                                  </Typography>
+                                  <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                  >
+                                    из {score}
+                                  </Typography>
+                                </Box>
+                              </ListItem>
+                            );
+                          },
                         )}
                       </List>
+                      <Divider sx={{ my: 1 }} />
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          p: 1,
+                          bgcolor: meetsRequirements ? "#e8f5e9" : "#ffebee",
+                          borderRadius: 1,
+                        }}
+                      >
+                        <Typography variant="body2" fontWeight="bold">
+                          Общая сумма:
+                        </Typography>
+                        <Chip
+                          label={`${totalMinScore} баллов`}
+                          size="small"
+                          sx={{
+                            bgcolor: meetsRequirements ? "#c8e6c9" : "#ffcdd2",
+                            color: meetsRequirements ? "#2e7d32" : "#c62828",
+                            fontWeight: "bold",
+                          }}
+                        />
+                      </Box>
+                    </Paper>
+                  </Box>
+
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="h6" fontWeight="bold" gutterBottom>
+                      📊 Минимальный проходной балл
+                    </Typography>
+                    <Paper sx={{ p: 2, bgcolor: "grey.50" }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 2,
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <Chip
+                          label={`${totalMinScore} баллов (сумма)`}
+                          sx={{
+                            borderRadius: 2,
+                            bgcolor: meetsRequirements ? "#e8f5e9" : "#ffebee",
+                            color: meetsRequirements ? "#2e7d32" : "#c62828",
+                            fontWeight: "bold",
+                          }}
+                        />
+                        {userData && (
+                          <>
+                            <Chip
+                              label={`Ваши баллы: ${userTotalScore}`}
+                              sx={{
+                                borderRadius: 2,
+                                bgcolor: meetsRequirements
+                                  ? "#c8e6c9"
+                                  : "#ffcdd2",
+                                fontWeight: "bold",
+                              }}
+                            />
+                            <Typography
+                              variant="body2"
+                              color={
+                                meetsRequirements
+                                  ? "success.main"
+                                  : "error.main"
+                              }
+                              fontWeight="bold"
+                            >
+                              {meetsRequirements
+                                ? "✓ Достаточно баллов для поступления"
+                                : "✗ Не хватает баллов"}
+                            </Typography>
+                          </>
+                        )}
+                      </Box>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mt: 1 }}
+                      >
+                        Для поступления необходимо набрать указанную сумму
+                        баллов по всем предметам
+                      </Typography>
                     </Paper>
                   </Box>
 
@@ -792,9 +926,14 @@ function DirectionsPage() {
                           textAlign: "center",
                         }}
                       >
-                        <AttachMoneyIcon sx={{ fontSize: 40, mb: 1 }} />
+                        <MonetizationOnIcon sx={{ fontSize: 40, mb: 1 }} />
                         <Typography variant="h4" fontWeight="bold">
-                          {(selectedDirection.cost / 1000).toFixed(0)}к ₽
+                          {(
+                            (selectedDirection.cost ||
+                              selectedDirection.costPerYear ||
+                              0) / 1000
+                          ).toFixed(0)}
+                          к ₽
                         </Typography>
                         <Typography variant="body2">Стоимость в год</Typography>
                       </Paper>
@@ -857,11 +996,11 @@ function DirectionsPage() {
                   </Button>
                   <Button
                     variant="contained"
-                    onClick={() => {
-                      if (selectedUniversity?.website)
-                        window.open(selectedUniversity.website, "_blank");
-                    }}
-                    startIcon={<LocationOnIcon />}
+                    href={selectedUniversity?.website || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    startIcon={<LanguageIcon />}
+                    disabled={!selectedUniversity?.website}
                   >
                     Перейти на сайт вуза
                   </Button>
@@ -870,7 +1009,7 @@ function DirectionsPage() {
             );
           })()}
       </Dialog>
-
+     
       {filteredData.length === 0 && (
         <Paper sx={{ p: 6, textAlign: "center", mt: 3 }}>
           <Typography variant="h6" color="text.secondary" gutterBottom>

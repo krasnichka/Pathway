@@ -1,259 +1,311 @@
 import * as React from "react";
-import { useAuth } from "../context/AuthContext";
 import {
+  Typography,
   Container,
   Box,
-  Typography,
-  Paper,
   Grid,
+  Paper,
   Card,
   CardContent,
   Chip,
-  Alert,
-  CircularProgress,
 } from "@mui/material";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import { useAuth } from "../context/AuthContext";
 import SchoolIcon from "@mui/icons-material/School";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import PsychologyIcon from "@mui/icons-material/Psychology";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import CalculateIcon from "@mui/icons-material/Calculate";
+import CodeIcon from "@mui/icons-material/Code";
+import PaletteIcon from "@mui/icons-material/Palette";
+import SportsIcon from "@mui/icons-material/Sports";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import BookIcon from "@mui/icons-material/Book";
+import ScienceIcon from "@mui/icons-material/Science";
+import BuildIcon from "@mui/icons-material/Build";
+import BusinessIcon from "@mui/icons-material/Business";
+
+// Храним названия иконок, а не JSX
+const hobbyIconNames = {
+  IT: "CodeIcon",
+  Творчество: "PaletteIcon",
+  Спорт: "SportsIcon",
+  Музыка: "MusicNoteIcon",
+  Наука: "ScienceIcon",
+  Чтение: "BookIcon",
+  Инженерия: "BuildIcon",
+  Бизнес: "BusinessIcon",
+};
+
+// Компонент для рендера иконки по имени
+const RenderHobbyIcon = ({ name, sx }) => {
+  const icons = {
+    CodeIcon: <CodeIcon sx={sx} />,
+    PaletteIcon: <PaletteIcon sx={sx} />,
+    SportsIcon: <SportsIcon sx={sx} />,
+    MusicNoteIcon: <MusicNoteIcon sx={sx} />,
+    ScienceIcon: <ScienceIcon sx={sx} />,
+    BookIcon: <BookIcon sx={sx} />,
+    BuildIcon: <BuildIcon sx={sx} />,
+    BusinessIcon: <BusinessIcon sx={sx} />,
+  };
+  return icons[name] || <PsychologyIcon sx={sx} />;
+};
+
+// Категоризация увлечений
+const hobbyCategories = {
+  Программирование: "IT",
+  "Веб-разработка": "IT",
+  "Создание игр": "IT",
+  "Дизайн и графика": "Творчество",
+  Видеомонтаж: "Творчество",
+  Фотография: "Творчество",
+  Рисование: "Творчество",
+  "Спорт (командный)": "Спорт",
+  "Спорт (индивидуальный)": "Спорт",
+  "Музыка (игра на инструменте)": "Музыка",
+  Пение: "Музыка",
+  Танцы: "Творчество",
+  "Научные эксперименты": "Наука",
+  Робототехника: "Инженерия",
+  "3D-моделирование": "IT",
+  Чтение: "Чтение",
+  "Написание текстов/стихов": "Творчество",
+  "Изучение иностранных языков": "Наука",
+  Кулинария: "Творчество",
+  Рукоделие: "Творчество",
+  Видеоблогинг: "Творчество",
+  "Социальные проекты": "Бизнес",
+  "Настольные игры": "Творчество",
+  Шахматы: "Творчество",
+  Путешествия: "Творчество",
+  "Изучение истории": "Наука",
+  Астрономия: "Наука",
+  "Биология/природа": "Наука",
+  Волонтёрство: "Бизнес",
+};
+
+// Категоризация интересов
+const interestCategories = {
+  IT: [
+    "IT и программирование",
+    "Веб-разработка",
+    "Мобильная разработка",
+    "Искусственный интеллект",
+    "Кибербезопасность",
+    "Анализ данных",
+  ],
+  Инженерия: ["Инженерия", "Архитектура и строительство"],
+  Медицина: ["Медицина", "Фармацевтика", "Биотехнологии"],
+  Экономика: [
+    "Экономика и финансы",
+    "Менеджмент и бизнес",
+    "Маркетинг и реклама",
+  ],
+  Творчество: [
+    "Дизайн и искусство",
+    "Журналистика и медиа",
+    "Кино и телевидение",
+    "Музыка",
+    "Фотография",
+  ],
+  Наука: ["Наука", "Экология"],
+  Гуманитарные: [
+    "Психология",
+    "Педагогика",
+    "Юриспруденция",
+    "Политология",
+    "Лингвистика и перевод",
+  ],
+};
 
 function StatsPage() {
-  const { userData, loading } = useAuth();
+  const { userData } = useAuth();
 
-  if (loading) {
-    return (
-      <Container maxWidth="lg" sx={{ py: 8, textAlign: "center" }}>
-        <CircularProgress />
-        <Typography sx={{ mt: 2 }}>Загрузка статистики...</Typography>
-      </Container>
+  const averageGrade = React.useMemo(() => {
+    if (!userData?.favoriteSubjects || userData.favoriteSubjects.length === 0)
+      return 0;
+    const sum = userData.favoriteSubjects.reduce(
+      (acc, subj) => acc + parseFloat(subj.grade || 0),
+      0,
     );
-  }
+    return (sum / userData.favoriteSubjects.length).toFixed(1);
+  }, [userData?.favoriteSubjects]);
 
-  if (!userData || !userData.grade) {
-    return (
-      <Container maxWidth="lg" sx={{ py: 8 }}>
-        <Alert severity="info" sx={{ mb: 3 }}>
-          📝 Заполни профиль, чтобы увидеть персональную статистику
-        </Alert>
-        <Paper sx={{ p: 4, textAlign: "center" }}>
-          <Typography variant="h6" gutterBottom>
-            Пока нет данных для отображения
-          </Typography>
-          <Typography color="text.secondary">
-            Перейди в профиль и укажи свои оценки, интересы и достижения
-          </Typography>
-        </Paper>
-      </Container>
-    );
-  }
+  const hobbiesByCategory = React.useMemo(() => {
+    if (!userData?.hobbies || userData.hobbies.length === 0) return {};
+    const grouped = {};
+    userData.hobbies.forEach((hobby) => {
+      const category = hobbyCategories[hobby] || "Другое";
+      if (!grouped[category]) grouped[category] = [];
+      grouped[category].push(hobby);
+    });
+    return grouped;
+  }, [userData?.hobbies]);
 
-  // --- ДАННЫЕ ДЛЯ ГРАФИКОВ ---
+  const interestsByCategory = React.useMemo(() => {
+    if (!userData?.careerInterests || userData.careerInterests.length === 0)
+      return {};
+    const grouped = {};
+    userData.careerInterests.forEach((interest) => {
+      let foundCategory = "Другое";
+      Object.entries(interestCategories).forEach(([category, items]) => {
+        if (items.includes(interest)) foundCategory = category;
+      });
+      if (!grouped[foundCategory]) grouped[foundCategory] = [];
+      grouped[foundCategory].push(interest);
+    });
+    return grouped;
+  }, [userData?.careerInterests]);
 
-  // 1. График изменения интересов (симуляция на основе хобби и интересов)
-  const interestChartData = {
-    chart: {
-      type: "spline",
-      height: 350,
-    },
-    title: {
-      text: "🎯 Динамика твоих интересов",
-      align: "left",
-    },
-    xAxis: {
-      categories: [
-        "5 класс",
-        "6 класс",
-        "7 класс",
-        "8 класс",
-        "9 класс",
-        "10 класс",
-        "11 класс",
-      ],
-    },
-    yAxis: {
+  // График 1: Успеваемость по предметам (Column)
+  const subjectsChartOptions = React.useMemo(() => {
+    if (!userData?.favoriteSubjects || userData.favoriteSubjects.length === 0)
+      return null;
+    return {
+      chart: { type: "column", height: 300 },
       title: {
-        text: "Уровень интереса (%)",
+        text: "📚 Твоя успеваемость",
+        align: "left",
+        style: { fontSize: "16px", fontWeight: "bold" },
       },
-      min: 0,
-      max: 100,
-    },
-    tooltip: {
-      valueSuffix: "%",
-    },
-    plotOptions: {
-      series: {
-        marker: {
-          enabled: true,
-          radius: 6,
+      credits: { enabled: false },
+      xAxis: {
+        categories: userData.favoriteSubjects.map((s) => s.name),
+        labels: { rotation: -45, style: { fontSize: "11px" } },
+      },
+      yAxis: { min: 0, max: 5, title: { text: "Оценка" }, tickInterval: 1 },
+      plotOptions: {
+        column: {
+          borderRadius: 8,
+          dataLabels: { enabled: true },
+          colorByPoint: true,
         },
       },
-    },
-    series: generateInterestSeries(userData),
-    credits: {
-      enabled: false,
-    },
-  };
-
-  // 2. График успеваемости по предметам
-  const gradesChartData = {
-    chart: {
-      type: "column",
-      height: 350,
-    },
-    title: {
-      text: "📚 Твоя успеваемость по предметам",
-      align: "left",
-    },
-    xAxis: {
-      categories: userData.favoriteSubjects?.map((s) => s.name) || [],
-      labels: {
-        rotation: -45,
-      },
-    },
-    yAxis: {
-      title: {
-        text: "Оценка",
-      },
-      min: 0,
-      max: 5,
-      tickInterval: 1,
-    },
-    plotOptions: {
-      column: {
-        borderRadius: 8,
-        dataLabels: {
-          enabled: true,
-          format: "{y}",
-        },
-      },
-    },
-    series: [
-      {
-        name: "Твоя оценка",
-        color: "#1976d2",
-        data: userData.favoriteSubjects?.map((s) => parseInt(s.grade)) || [],
-      },
-    ],
-    credits: {
-      enabled: false,
-    },
-  };
-
-  // 3. График баллов ЕГЭ vs проходные
-  const examChartData = {
-    chart: {
-      type: "bar",
-      height: 400,
-    },
-    title: {
-      text: "📊 Твои баллы ЕГЭ vs Минимальные требования",
-      align: "left",
-    },
-    xAxis: {
-      categories: Object.keys(userData.examScores || {}).map((key) => {
-        const names = {
-          math: "Математика",
-          russian: "Русский язык",
-          physics: "Физика",
-          informatics: "Информатика",
-          chemistry: "Химия",
-          biology: "Биология",
-          social: "Общество",
-          history: "История",
-          literature: "Литература",
-          foreign: "Иностранный",
-        };
-        return names[key] || key;
+      colors: userData.favoriteSubjects.map((s) => {
+        const grade = parseFloat(s.grade);
+        if (grade >= 4.5) return "#4caf50";
+        if (grade >= 4) return "#8bc34a";
+        if (grade >= 3.5) return "#ffeb3b";
+        if (grade >= 3) return "#ff9800";
+        return "#f44336";
       }),
-    },
-    yAxis: {
+      series: [
+        {
+          name: "Оценка",
+          data: userData.favoriteSubjects.map((s) => parseFloat(s.grade)),
+        },
+      ],
+    };
+  }, [userData?.favoriteSubjects]);
+
+  // График 2: Баллы ЕГЭ (Column вместо Gauge)
+  const egaChartOptions = React.useMemo(() => {
+    if (!userData?.examScores || Object.keys(userData.examScores).length === 0)
+      return null;
+    const subjectNames = {
+      math: "Математика",
+      russian: "Русский язык",
+      physics: "Физика",
+      informatics: "Информатика",
+      chemistry: "Химия",
+      biology: "Биология",
+      social: "Обществознание",
+      history: "История",
+      literature: "Литература",
+      foreign: "Иностранный язык",
+    };
+    return {
+      chart: { type: "column", height: 300 },
       title: {
-        text: "Баллы",
+        text: "🎯 Твои баллы ЕГЭ",
+        align: "left",
+        style: { fontSize: "16px", fontWeight: "bold" },
       },
-      min: 0,
-      max: 100,
-    },
-    plotOptions: {
-      bar: {
-        borderRadius: 8,
-        dataLabels: {
-          enabled: true,
+      credits: { enabled: false },
+      xAxis: {
+        categories: Object.keys(userData.examScores).map(
+          (k) => subjectNames[k] || k,
+        ),
+      },
+      yAxis: { min: 0, max: 100, title: { text: "Баллы" } },
+      plotOptions: {
+        column: { borderRadius: 8, dataLabels: { enabled: true } },
+      },
+      colors: Object.values(userData.examScores).map((score) =>
+        score >= 80 ? "#4caf50" : score >= 60 ? "#ff9800" : "#f44336",
+      ),
+      series: [{ name: "Балл", data: Object.values(userData.examScores) }],
+    };
+  }, [userData?.examScores]);
+
+  // График 3: Распределение интересов (Pie)
+  const interestsPieChartOptions = React.useMemo(() => {
+    if (!userData?.careerInterests || userData.careerInterests.length === 0)
+      return null;
+    const data = Object.entries(interestsByCategory).map(
+      ([category, items]) => ({ name: category, y: items.length }),
+    );
+    return {
+      chart: { type: "pie", height: 300 },
+      title: {
+        text: "🎯 Твои интересы",
+        align: "left",
+        style: { fontSize: "16px", fontWeight: "bold" },
+      },
+      credits: { enabled: false },
+      tooltip: { pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b>" },
+      plotOptions: {
+        pie: {
+          dataLabels: {
+            enabled: true,
+            format: "<b>{point.name}</b>: {point.percentage:.1f}%",
+          },
+          showInLegend: true,
         },
       },
-    },
-    series: [
-      {
-        name: "Твои баллы",
-        color: "#2e7d32",
-        data: Object.values(userData.examScores || {}),
-      },
-      {
-        name: "Средний проходной",
-        color: "#ff9800",
-        data: Object.values(userData.examScores || {}).map(() => 75),
-      },
-    ],
-    credits: {
-      enabled: false,
-    },
-  };
+      series: [{ name: "Интересы", colorByPoint: true, data }],
+    };
+  }, [userData?.careerInterests, interestsByCategory]);
 
-  // 4. Распределение времени (хобби)
-  const hobbiesChartData = {
-    chart: {
-      type: "pie",
-      height: 350,
-    },
-    title: {
-      text: "🎨 Твои увлечения",
-      align: "left",
-    },
-    tooltip: {
-      pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b>",
-    },
-    plotOptions: {
-      pie: {
-        allowPointSelect: true,
-        cursor: "pointer",
-        dataLabels: {
-          enabled: true,
-          format: "<b>{point.name}</b>: {point.percentage:.1f} %",
-        },
+  // График 4: Увлечения по категориям (Bar)
+  const hobbiesBarChartOptions = React.useMemo(() => {
+    if (!userData?.hobbies || userData.hobbies.length === 0) return null;
+    const data = Object.entries(hobbiesByCategory).map(([category, items]) => ({
+      name: category,
+      y: items.length,
+    }));
+    return {
+      chart: { type: "bar", height: 300 },
+      title: {
+        text: "🎨 Увлечения по категориям",
+        align: "left",
+        style: { fontSize: "16px", fontWeight: "bold" },
       },
-    },
-    series: [
-      {
-        name: "Хобби",
-        colorByPoint: true,
-        data: (userData.hobbies || []).map((hobby, index) => ({
-          name: hobby,
-          y: Math.floor(Math.random() * 30) + 10, // Симуляция времени
-        })),
+      credits: { enabled: false },
+      xAxis: {
+        categories: Object.keys(hobbiesByCategory),
+        title: { text: null },
       },
-    ],
-    credits: {
-      enabled: false,
-    },
-  };
-
-  // --- СТАТИСТИКА ---
-  const stats = {
-    avgGrade:
-      userData.favoriteSubjects?.reduce(
-        (acc, s) => acc + parseInt(s.grade),
-        0,
-      ) / userData.favoriteSubjects?.length || 0,
-    totalAchievements: userData.achievements?.length || 0,
-    totalHobbies: userData.hobbies?.length || 0,
-    totalInterests: userData.careerInterests?.length || 0,
-    examSubjects: Object.keys(userData.examScores || {}).length,
-  };
+      yAxis: { min: 0, title: { text: "Количество" } },
+      plotOptions: { bar: { borderRadius: 8, dataLabels: { enabled: true } } },
+      colors: [
+        "#2196f3",
+        "#e91e63",
+        "#4caf50",
+        "#9c27b0",
+        "#ff9800",
+        "#795548",
+        "#607d8b",
+        "#00bcd4",
+      ],
+      series: [{ name: "Увлечения", data }],
+    };
+  }, [userData?.hobbies, hobbiesByCategory]);
 
   return (
     <Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
-      {/* Заголовок */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
           📊 Твоя статистика
@@ -263,214 +315,263 @@ function StatsPage() {
         </Typography>
       </Box>
 
-      {/* Карточки со статистикой */}
+      {/* Карточки статистики */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={2.4}>
-          <Card
-            sx={{ bgcolor: "primary.light", color: "primary.contrastText" }}
-          >
+          <Card sx={{ bgcolor: "#2196f3", color: "white", borderRadius: 3 }}>
             <CardContent>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <SchoolIcon sx={{ mr: 1 }} />
-                <Typography variant="body2">Средний балл</Typography>
-              </Box>
+              <SchoolIcon sx={{ fontSize: 32, mb: 1, opacity: 0.8 }} />
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                Средний балл
+              </Typography>
               <Typography variant="h3" fontWeight="bold">
-                {stats.avgGrade.toFixed(1)}
+                {averageGrade}
               </Typography>
             </CardContent>
           </Card>
         </Grid>
-
         <Grid item xs={12} sm={6} md={2.4}>
-          <Card
-            sx={{ bgcolor: "success.light", color: "success.contrastText" }}
-          >
+          <Card sx={{ bgcolor: "#4caf50", color: "white", borderRadius: 3 }}>
             <CardContent>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <EmojiEventsIcon sx={{ mr: 1 }} />
-                <Typography variant="body2">Достижения</Typography>
-              </Box>
+              <EmojiEventsIcon sx={{ fontSize: 32, mb: 1, opacity: 0.8 }} />
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                Достижения
+              </Typography>
               <Typography variant="h3" fontWeight="bold">
-                {stats.totalAchievements}
+                {userData?.achievements?.length || 0}
               </Typography>
             </CardContent>
           </Card>
         </Grid>
-
         <Grid item xs={12} sm={6} md={2.4}>
-          <Card
-            sx={{ bgcolor: "warning.light", color: "warning.contrastText" }}
-          >
+          <Card sx={{ bgcolor: "#ff9800", color: "white", borderRadius: 3 }}>
             <CardContent>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <PsychologyIcon sx={{ mr: 1 }} />
-                <Typography variant="body2">Хобби</Typography>
-              </Box>
+              <PsychologyIcon sx={{ fontSize: 32, mb: 1, opacity: 0.8 }} />
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                Хобби
+              </Typography>
               <Typography variant="h3" fontWeight="bold">
-                {stats.totalHobbies}
+                {userData?.hobbies?.length || 0}
               </Typography>
             </CardContent>
           </Card>
         </Grid>
-
         <Grid item xs={12} sm={6} md={2.4}>
-          <Card sx={{ bgcolor: "info.light", color: "info.contrastText" }}>
+          <Card sx={{ bgcolor: "#03a9f4", color: "white", borderRadius: 3 }}>
             <CardContent>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <TrendingUpIcon sx={{ mr: 1 }} />
-                <Typography variant="body2">Интересы</Typography>
-              </Box>
+              <TrendingUpIcon sx={{ fontSize: 32, mb: 1, opacity: 0.8 }} />
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                Интересы
+              </Typography>
               <Typography variant="h3" fontWeight="bold">
-                {stats.totalInterests}
+                {userData?.careerInterests?.length || 0}
               </Typography>
             </CardContent>
           </Card>
         </Grid>
-
         <Grid item xs={12} sm={6} md={2.4}>
-          <Card
-            sx={{ bgcolor: "secondary.light", color: "secondary.contrastText" }}
-          >
+          <Card sx={{ bgcolor: "#9c27b0", color: "white", borderRadius: 3 }}>
             <CardContent>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <SchoolIcon sx={{ mr: 1 }} />
-                <Typography variant="body2">ЕГЭ</Typography>
-              </Box>
+              <CalculateIcon sx={{ fontSize: 32, mb: 1, opacity: 0.8 }} />
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                ЕГЭ
+              </Typography>
               <Typography variant="h3" fontWeight="bold">
-                {stats.examSubjects}
+                {Object.keys(userData?.examScores || {}).length}
               </Typography>
             </CardContent>
           </Card>
         </Grid>
       </Grid>
 
-      {/* Графики */}
-      <Grid container spacing={3}>
-        {/* График интересов */}
-        <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 3 }}>
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={interestChartData}
+      {/* 📊 График 1: Успеваемость */}
+      {subjectsChartOptions && (
+        <Paper sx={{ p: 3, mb: 4, borderRadius: 3 }}>
+          <HighchartsReact
+            highcharts={Highcharts}
+            options={subjectsChartOptions}
+          />
+        </Paper>
+      )}
+
+      {/* 🎯 График 2: Баллы ЕГЭ */}
+      {egaChartOptions && (
+        <Paper sx={{ p: 3, mb: 4, borderRadius: 3 }}>
+          <HighchartsReact highcharts={Highcharts} options={egaChartOptions} />
+        </Paper>
+      )}
+
+      {/* 🎨 Grid с карточками увлечений */}
+      <Paper sx={{ p: 3, mb: 4, borderRadius: 3 }}>
+        <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ mb: 3 }}>
+          🎨 Твои увлечения
+        </Typography>
+        {userData && userData.hobbies && userData.hobbies.length > 0 ? (
+          <Grid container spacing={2}>
+            {Object.entries(hobbiesByCategory).map(([category, hobbies]) => (
+              <Grid item xs={12} sm={6} md={4} key={category}>
+                <Card
+                  sx={{
+                    height: "100%",
+                    bgcolor: `${getCategoryColor(category)}.light`,
+                    borderLeft: `4px solid ${getCategoryColor(category)}`,
+                    transition: "transform 0.2s",
+                    "&:hover": { transform: "translateY(-4px)", boxShadow: 4 },
+                  }}
+                >
+                  <CardContent>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        mb: 2,
+                        color: `${getCategoryColor(category)}.main`,
+                      }}
+                    >
+                      <RenderHobbyIcon
+                        name={hobbyIconNames[category]}
+                        sx={{ fontSize: 40 }}
+                      />
+                    </Box>
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      align="center"
+                      gutterBottom
+                    >
+                      {category}
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: 0.5,
+                        justifyContent: "center",
+                      }}
+                    >
+                      {hobbies.map((hobby) => (
+                        <Chip
+                          key={hobby}
+                          label={hobby}
+                          size="small"
+                          sx={{ bgcolor: "white", fontWeight: 500 }}
+                        />
+                      ))}
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Box
+            sx={{
+              py: 6,
+              textAlign: "center",
+              bgcolor: "grey.50",
+              borderRadius: 2,
+            }}
+          >
+            <PsychologyIcon
+              sx={{
+                fontSize: 64,
+                color: "text.secondary",
+                opacity: 0.3,
+                mb: 2,
+              }}
             />
-          </Paper>
-        </Grid>
-
-        {/* График успеваемости */}
-        <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 3 }}>
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={gradesChartData}
-            />
-          </Paper>
-        </Grid>
-
-        {/* График ЕГЭ */}
-        <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <HighchartsReact highcharts={Highcharts} options={examChartData} />
-          </Paper>
-        </Grid>
-
-        {/* График хобби */}
-        <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 3 }}>
-            <HighchartsReact
-              highcharts={Highcharts}
-              options={hobbiesChartData}
-            />
-          </Paper>
-        </Grid>
-
-        {/* Рекомендации */}
-        <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" fontWeight="bold" gutterBottom>
-              💡 Инсайты на основе твоих данных
+            <Typography color="text.secondary">
+              Добавьте увлечения в профиле, чтобы увидеть их здесь
             </Typography>
-            <Box
-              sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}
-            >
-              {stats.avgGrade >= 4.5 && (
-                <Alert severity="success" icon={<TrendingUpIcon />}>
-                  <strong>Отличная успеваемость!</strong> Ты можешь претендовать
-                  на бюджетные места в топовых вузах.
-                </Alert>
-              )}
-              {stats.totalAchievements >= 3 && (
-                <Alert severity="success" icon={<EmojiEventsIcon />}>
-                  <strong>Много достижений!</strong> Это даст дополнительные
-                  баллы при поступлении.
-                </Alert>
-              )}
-              {stats.examSubjects >= 3 && (
-                <Alert severity="info" icon={<SchoolIcon />}>
-                  <strong>Хороший набор предметов!</strong> У тебя есть выбор из
-                  множества направлений.
-                </Alert>
-              )}
-              {stats.avgGrade < 4 && (
-                <Alert severity="warning" icon={<TrendingUpIcon />}>
-                  <strong>Есть куда расти!</strong> Сосредоточься на ключевых
-                  предметах для твоего направления.
-                </Alert>
-              )}
-            </Box>
-          </Paper>
+          </Box>
+        )}
+      </Paper>
+
+      {/* 📊 График 3: Распределение интересов */}
+      {interestsPieChartOptions && (
+        <Paper sx={{ p: 3, mb: 4, borderRadius: 3 }}>
+          <HighchartsReact
+            highcharts={Highcharts}
+            options={interestsPieChartOptions}
+          />
+        </Paper>
+      )}
+
+      {/* 📊 График 4: Увлечения по категориям */}
+      {hobbiesBarChartOptions && (
+        <Paper sx={{ p: 3, mb: 4, borderRadius: 3 }}>
+          <HighchartsReact
+            highcharts={Highcharts}
+            options={hobbiesBarChartOptions}
+          />
+        </Paper>
+      )}
+
+      {/* 💡 Инсайты */}
+      <Paper sx={{ p: 3, borderRadius: 3, bgcolor: "primary.light" }}>
+        <Typography variant="h6" fontWeight="bold" gutterBottom>
+          💡 Инсайты
+        </Typography>
+        <Grid container spacing={2}>
+          {userData?.favoriteSubjects &&
+            userData.favoriteSubjects.length > 0 && (
+              <Grid item xs={12} md={6}>
+                <Box sx={{ p: 2, bgcolor: "white", borderRadius: 2 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    📚 Твои сильные предметы:
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold">
+                    {userData.favoriteSubjects
+                      .filter((s) => parseFloat(s.grade) >= 4.5)
+                      .map((s) => s.name)
+                      .join(", ") || "Пока нет данных"}
+                  </Typography>
+                </Box>
+              </Grid>
+            )}
+          {userData?.careerInterests && userData.careerInterests.length > 0 && (
+            <Grid item xs={12} md={6}>
+              <Box sx={{ p: 2, bgcolor: "white", borderRadius: 2 }}>
+                <Typography variant="body2" color="text.secondary">
+                  🎯 Популярная категория:
+                </Typography>
+                <Typography variant="body1" fontWeight="bold">
+                  {getMostPopularCategory(userData.careerInterests)}
+                </Typography>
+              </Box>
+            </Grid>
+          )}
         </Grid>
-      </Grid>
+      </Paper>
     </Container>
   );
 }
 
-// --- ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ---
-function generateInterestSeries(userData) {
-  const categories = {
+function getCategoryColor(category) {
+  const colors = {
     IT: "#2196f3",
-    Инженерия: "#ff9800",
-    Медицина: "#f44336",
-    Экономика: "#4caf50",
-    Наука: "#9c27b0",
-    Дизайн: "#e91e63",
-    Юриспруденция: "#3f51b5",
-    Психология: "#00bcd4",
-    Медиа: "#ff5722",
-    Гуманитарные: "#795548",
+    Творчество: "#e91e63",
+    Спорт: "#4caf50",
+    Музыка: "#9c27b0",
+    Наука: "#ff9800",
+    Чтение: "#795548",
+    Инженерия: "#607d8b",
+    Бизнес: "#00bcd4",
   };
+  return colors[category] || "#9e9e9e";
+}
 
-  const interests = userData.careerInterests || [];
-
-  if (interests.length === 0) {
-    return [
-      {
-        name: "Интерес",
-        color: "#1976d2",
-        data: [30, 40, 50, 60, 70, 80, 85],
-      },
-    ];
-  }
-
-  return interests.slice(0, 3).map((interest, index) => {
-    // Находим категорию для интереса
-    let category = "IT";
-    Object.keys(categories).forEach((key) => {
-      if (interest.includes(key)) category = key;
+function getMostPopularCategory(interests) {
+  const counts = {};
+  interests.forEach((interest) => {
+    Object.entries(interestCategories).forEach(([category, items]) => {
+      if (items.includes(interest))
+        counts[category] = (counts[category] || 0) + 1;
     });
-
-    // Генерируем данные с ростом
-    const baseValue = 30 + index * 10;
-    const data = [];
-    for (let i = 0; i < 7; i++) {
-      data.push(Math.min(baseValue + i * 8 + Math.random() * 10, 100));
-    }
-
-    return {
-      name: interest,
-      color: categories[category] || "#1976d2",
-      data,
-    };
   });
+  const maxCategory = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+  return maxCategory ? maxCategory[0] : "Не определено";
 }
 
 export default StatsPage;
