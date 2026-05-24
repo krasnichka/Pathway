@@ -572,6 +572,7 @@ function ProfilePage() {
               ))}
             </Grid>
           </Collapse>
+          {/* В режиме просмотра ЕГЭ */}
           <Collapse
             in={!isEditing.exams && Object.keys(tempExamScores).length > 0}
           >
@@ -593,14 +594,7 @@ function ProfilePage() {
                       fontWeight="600"
                       color="success.contrastText"
                     >
-                      {s.name}
-                    </Typography>
-                    <Typography
-                      variant="h6"
-                      fontWeight="700"
-                      color="success.contrastText"
-                    >
-                      {tempExamScores[s.id]} баллов
+                      {s.name} {tempExamScores[s.id]} баллов
                     </Typography>
                   </Box>
                 </Grid>

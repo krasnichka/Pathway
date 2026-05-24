@@ -10,7 +10,6 @@ import {
   Card,
   CardContent,
   Button,
-  CircularProgress,
   Alert,
   Divider,
   Dialog,
@@ -35,16 +34,18 @@ import WorkIcon from "@mui/icons-material/Work";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import LanguageIcon from "@mui/icons-material/Language";
-import { useQuery } from "@tanstack/react-query";
-import { getAllUniversities } from "../services/universitiesApi";
-import calculateRecommendations, {
-  getAdmissionChanceText,
-} from "../utils/recommendationAlgorithm";
+
+// ✅ ИМПОРТ ДАННЫХ ИЗ ЛОКАЛЬНОГО ФАЙЛА
+import universitiesData from "../data/universities.json";
+
 import { useAuth } from "../context/AuthContext";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { useNavigate } from "react-router-dom";
 import { DAILY_TASK_POOL, REST_TASKS } from "../utils/taskConstants";
+import calculateRecommendations, {
+  getAdmissionChanceText,
+} from "../utils/recommendationAlgorithm";
 
 const categories = [
   "Твой ТОП",
@@ -90,14 +91,8 @@ function DirectionsPage() {
   const [selectedUniversity, setSelectedUniversity] = React.useState(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
-  const {
-    data: universities,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["universities"],
-    queryFn: getAllUniversities,
-  });
+  // ✅ БЕРЁМ ДАННЫЕ ПРЯМО ИЗ ЛОКАЛЬНОГО ФАЙЛА (без API)
+  const universities = universitiesData.universities;
 
   // Получаем рекомендации
   const topRecommendations = React.useMemo(() => {
@@ -257,22 +252,7 @@ function DirectionsPage() {
     );
   };
 
-  if (isLoading) {
-    return (
-      <Container maxWidth="lg" sx={{ py: 8, textAlign: "center" }}>
-        <CircularProgress />
-        <Typography sx={{ mt: 2 }}>Загрузка направлений...</Typography>
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container maxWidth="lg" sx={{ py: 8 }}>
-        <Alert severity="error">Ошибка загрузки данных: {error.message}</Alert>
-      </Container>
-    );
-  }
+  // ✅ Убрали isLoading и error — данные загружаются мгновенно из локального файла
 
   return (
     <Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
@@ -286,6 +266,7 @@ function DirectionsPage() {
             : `Найдено: ${filteredData.length} университетов`}
         </Typography>
       </Box>
+
       <TextField
         fullWidth
         placeholder="Поиск направления или вуза..."
@@ -300,6 +281,7 @@ function DirectionsPage() {
           ),
         }}
       />
+
       <Box sx={{ mb: 4, display: "flex", flexWrap: "wrap", gap: 1 }}>
         {categories.map((category) => (
           <Chip
@@ -322,6 +304,7 @@ function DirectionsPage() {
           />
         ))}
       </Box>
+
       {showTopMatches && topRecommendations.length > 0 && (
         <Paper
           sx={{
@@ -336,6 +319,7 @@ function DirectionsPage() {
           </Typography>
         </Paper>
       )}
+
       <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
         {filteredData.map((university) => (
           <Card
@@ -442,9 +426,7 @@ function DirectionsPage() {
                           bgcolor: "primary.light",
                           borderColor: "primary.main",
                           "& .direction-title, & .direction-category, & .direction-info":
-                            {
-                              color: "primary.contrastText",
-                            },
+                            { color: "primary.contrastText" },
                         },
                         transition: "all 0.2s",
                         position: "relative",
@@ -510,7 +492,6 @@ function DirectionsPage() {
                         </Button>
                       </Box>
 
-                      {/* ✅ ПОКАЗЫВАЕМ СУММУ БАЛЛОВ С ЦВЕТОМ */}
                       <Box sx={{ mb: 2 }} className="direction-info">
                         <Typography
                           variant="body2"
@@ -615,6 +596,8 @@ function DirectionsPage() {
           </Card>
         ))}
       </Box>
+
+      {/* Модалка с деталями */}
       <Dialog
         open={dialogOpen}
         onClose={handleCloseDialog}
@@ -639,7 +622,6 @@ function DirectionsPage() {
             );
             const meetsRequirements = userTotalScore >= totalMinScore;
 
-            // ✅ Список названий предметов
             const subjectNames = {
               math: "Математика",
               russian: "Русский язык",
@@ -755,7 +737,7 @@ function DirectionsPage() {
                     </Paper>
                   )}
 
-                  {/* ✅ СПИСОК ПРЕДМЕТОВ ЕГЭ */}
+                  {/* Список предметов ЕГЭ */}
                   <Box sx={{ mb: 3 }}>
                     <Typography variant="h6" fontWeight="bold" gutterBottom>
                       📋 Необходимые предметы ЕГЭ
@@ -767,7 +749,6 @@ function DirectionsPage() {
                             const userScore =
                               userData?.examScores?.[subject] || 0;
                             const meetsRequirement = userScore >= score;
-
                             return (
                               <ListItem
                                 key={subject}
@@ -951,7 +932,7 @@ function DirectionsPage() {
                       variant="body2"
                       sx={{ display: "flex", alignItems: "center", mb: 1 }}
                     >
-                      <WorkIcon sx={{ mr: 1 }} />
+                      <WorkIcon sx={{ mr: 1 }} />{" "}
                       <strong>Длительность обучения:</strong>{" "}
                       {selectedDirection.duration}
                     </Typography>
@@ -959,8 +940,8 @@ function DirectionsPage() {
                       variant="body2"
                       sx={{ display: "flex", alignItems: "center" }}
                     >
-                      <LocationOnIcon sx={{ mr: 1 }} />
-                      <strong>Город:</strong> {selectedUniversity.city}
+                      <LocationOnIcon sx={{ mr: 1 }} /> <strong>Город:</strong>{" "}
+                      {selectedUniversity.city}
                     </Typography>
                   </Paper>
 
@@ -1009,7 +990,7 @@ function DirectionsPage() {
             );
           })()}
       </Dialog>
-     
+
       {filteredData.length === 0 && (
         <Paper sx={{ p: 6, textAlign: "center", mt: 3 }}>
           <Typography variant="h6" color="text.secondary" gutterBottom>
