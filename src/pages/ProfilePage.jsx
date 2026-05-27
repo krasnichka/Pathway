@@ -453,13 +453,32 @@ function ProfilePage() {
               ним
             </Typography>
             <Grid container spacing={2} sx={{ mb: 3 }}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} md={7}>
                 <TextField
                   select
                   fullWidth
                   label="Предмет"
                   value={newSubject}
                   onChange={(e) => setNewSubject(e.target.value)}
+                  SelectProps={{
+                    displayEmpty: true,
+                    MenuProps: {
+                      PaperProps: {
+                        sx: {
+                          maxHeight: 300,
+                        },
+                      },
+                    },
+                  }}
+                  sx={{
+                    mt: 1,
+                    minWidth: 200,
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: !newSubject
+                        ? "rgba(0, 0, 0, 0.23)"
+                        : undefined,
+                    },
+                  }}
                 >
                   {SUBJECTS.map((s) => (
                     <MenuItem key={s} value={s}>
@@ -468,13 +487,20 @@ function ProfilePage() {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={4} md={3}>
                 <TextField
                   select
                   fullWidth
                   label="Оценка"
                   value={newSubjectGrade}
                   onChange={(e) => setNewSubjectGrade(e.target.value)}
+                  SelectProps={{
+                    displayEmpty: true,
+                  }}
+                  sx={{
+                    mt: 1,
+                    minWidth: 120,
+                  }}
                 >
                   {GRADES.map((g) => (
                     <MenuItem key={g} value={g}>
@@ -489,7 +515,13 @@ function ProfilePage() {
                   variant="contained"
                   startIcon={<AddIcon />}
                   onClick={handleAddSubject}
-                  sx={{ height: "100%", borderRadius: 2 }}
+                  disabled={!newSubject}
+                  sx={{
+                    height: "56px",
+                    borderRadius: 2,
+                    mt: 1,
+                    minWidth: 120,
+                  }}
                 >
                   Добавить
                 </Button>
@@ -501,7 +533,15 @@ function ProfilePage() {
                   key={s.name}
                   label={`${s.name} • ${s.grade}`}
                   onDelete={() => handleRemoveSubject(s.name)}
-                  sx={{ borderRadius: 2 }}
+                  sx={{
+                    borderRadius: 2,
+                    maxWidth: "100%",
+                    "& .MuiChip-label": {
+                      whiteSpace: "normal",
+                      wordBreak: "break-word",
+                      padding: "4px 8px",
+                    },
+                  }}
                 />
               ))}
             </Box>
@@ -512,7 +552,16 @@ function ProfilePage() {
                 <Chip
                   key={s.name}
                   label={`${s.name} • ${s.grade}`}
-                  sx={{ borderRadius: 2, fontWeight: "600" }}
+                  sx={{
+                    borderRadius: 2,
+                    fontWeight: "600",
+                    maxWidth: "100%",
+                    "& .MuiChip-label": {
+                      whiteSpace: "normal",
+                      wordBreak: "break-word",
+                      padding: "4px 8px",
+                    },
+                  }}
                 />
               ))}
             </Box>
@@ -539,7 +588,7 @@ function ProfilePage() {
             <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
               <SchoolIcon sx={{ color: "primary.main", fontSize: 28 }} />
               <Typography variant="h6" fontWeight="700">
-                Баллы ЕГЭ/ОГЭ
+                Баллы ЕГЭ
               </Typography>
             </Box>
           </Box>
@@ -567,6 +616,14 @@ function ProfilePage() {
                       pattern: "[0-9]*",
                     }}
                     helperText={s.required ? "Обязательный предмет" : ""}
+                    sx={{
+                      "& .MuiInputLabel-root": {
+                        fontSize: "0.95rem",
+                      },
+                      "& .MuiOutlinedInput-input": {
+                        fontSize: "0.95rem",
+                      },
+                    }}
                   />
                 </Grid>
               ))}
@@ -593,8 +650,22 @@ function ProfilePage() {
                       variant="body2"
                       fontWeight="600"
                       color="success.contrastText"
+                      sx={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        maxWidth: "70%",
+                      }}
                     >
-                      {s.name} {tempExamScores[s.id]} баллов
+                      {s.name}
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      color="success.contrastText"
+                      sx={{ ml: 1 }}
+                    >
+                      {tempExamScores[s.id]} баллов
                     </Typography>
                   </Box>
                 </Grid>

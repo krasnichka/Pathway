@@ -322,7 +322,7 @@ function GoalsPage() {
 
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
-          🎯 Твои цели
+          🎯 Цели
         </Typography>
         <Typography color="text.secondary">
           Двигайся к мечте маленькими шагами каждый день
@@ -403,10 +403,10 @@ function GoalsPage() {
           <Card>
             <CardContent>
               <Typography variant="h6" fontWeight="bold" gutterBottom>
-                📋 Глубинные задачи
+                📋 Стратегические задачи
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                Важные шаги к твоей цели
+                Важные шаги к вашей цели
               </Typography>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
                 {goalData.longTermTasks?.map((task) => (
@@ -474,7 +474,7 @@ function GoalsPage() {
               >
                 <Box>
                   <Typography variant="h6" fontWeight="bold">
-                    📅 Ежедневные задачи
+                    📅 Тактические задачи
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Поддержи огонёк маленькими шагами
@@ -546,7 +546,7 @@ function GoalsPage() {
           <Card>
             <CardContent>
               <Typography variant="h6" fontWeight="bold" gutterBottom>
-                🏆 Твои награды
+                🏆 Ваши награды
               </Typography>
               <Grid container spacing={2}>
                 {ACHIEVEMENTS.map((achievement) => {

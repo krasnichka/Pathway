@@ -308,7 +308,7 @@ function StatsPage() {
     <Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
-          📊 Твоя статистика
+          📊 Ваша статистика
         </Typography>
         <Typography color="text.secondary">
           Анализируй свой прогресс и интересы

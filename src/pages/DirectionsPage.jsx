@@ -48,7 +48,7 @@ import calculateRecommendations, {
 } from "../utils/recommendationAlgorithm";
 
 const categories = [
-  "Твой ТОП",
+  "ТОП",
   "Все",
   "IT",
   "Инженерия",
@@ -154,7 +154,7 @@ function DirectionsPage() {
   ]);
 
   const handleCategoryChange = (category) => {
-    if (category === "Твой ТОП") {
+    if (category === "ТОП") {
       setShowTopMatches(true);
       setSelectedCategory("Все");
     } else {
@@ -258,7 +258,7 @@ function DirectionsPage() {
     <Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
-          🎓 Направления и вузы
+          🎓Направления и вузы
         </Typography>
         <Typography color="text.secondary" variant="body1">
           {showTopMatches
@@ -289,13 +289,13 @@ function DirectionsPage() {
             label={category}
             onClick={() => handleCategoryChange(category)}
             color={
-              (showTopMatches && category === "Твой ТОП") ||
+              (showTopMatches && category === "ТОП") ||
               (!showTopMatches && selectedCategory === category)
                 ? "primary"
                 : "default"
             }
             variant={
-              (showTopMatches && category === "Твой ТОП") ||
+              (showTopMatches && category === "ТОП") ||
               (!showTopMatches && selectedCategory === category)
                 ? "filled"
                 : "outlined"
